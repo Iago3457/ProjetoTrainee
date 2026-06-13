@@ -8,11 +8,38 @@ interface LoginCardProps {
 }
 
 export default function LoginCard({ onNavigate }: LoginCardProps) {
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    onNavigate?.('dashboard')
-  }
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+  const [erro, setErro] = useState('')
+  const [carregando, setCarregando] = useState(false)
 
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setCarregando(true)
+    setErro('')
+
+    try {
+      const response = await fetch('http://localhost:3000/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha }),
+      })
+      
+      const data = await response.json()
+      
+      if (!response.ok) { 
+        throw new Error(data.mensagem || 'E-Mail ou senha incorretos')
+      }
+ 
+      localStorage.setItem('token', data.access_token)
+      onNavigate?.('dashboard')
+    } catch (error: any) {
+      setErro(error.message || 'Ocorreu um erro durante o login')
+    } finally {
+      setCarregando(false)
+    }
+  }
+  
   return (
     <div className="bg-white border border-ui-border rounded-xl drop-shadow-[0px_1px_1px_rgba(0,0,0,0.05)] flex flex-col gap-8 p-6 sm:p-[33px]">
       <div className="flex flex-col items-center gap-1 w-full">
@@ -36,6 +63,9 @@ export default function LoginCard({ onNavigate }: LoginCardProps) {
           icon={<EmailIcon />}
           type="email"
           placeholder="seu@email.com"
+          value={email}
+          onChange = {(e React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+          required
         />
 
         <InputField
@@ -44,7 +74,10 @@ export default function LoginCard({ onNavigate }: LoginCardProps) {
           type="password"
           placeholder="••••••••"
           rightElement="Esqueceu a senha?"
-        />
+          value={senha}
+          onChange = {(e React.ChangeEvent<HTMLInputElement>) => setSenha(e.target.value)}
+          required
+         />
 
         <div className="pt-2">
           <button
