@@ -27,8 +27,14 @@ export default function LoginCard({ onNavigate }: LoginCardProps) {
       
       const data = await response.json()
       
-      if (!response.ok) { 
-        throw new Error(data.mensagem || 'E-Mail ou senha incorretos')
+      if (!response.ok) {
+        const mensagensBackend = Array.isArray(data.message)
+          ? data.message
+          : data.message
+            ? [data.message]
+            : ['Ocorreu um erro no login.']
+
+        throw new Error(mensagensBackend.join('\n'))
       }
  
       localStorage.setItem('token', data.access_token)
@@ -58,6 +64,12 @@ export default function LoginCard({ onNavigate }: LoginCardProps) {
       </div>
 
       <form className="flex flex-col gap-6 w-full" onSubmit={handleSubmit}>
+        {erro && (
+          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 whitespace-pre-line">
+            {erro}
+          </div>
+        )}
+
         <InputField
           label="E-mail"
           icon={<EmailIcon />}
@@ -82,9 +94,10 @@ export default function LoginCard({ onNavigate }: LoginCardProps) {
         <div className="pt-2">
           <button
             type="submit"
+            disabled={carregando}
             className="w-full flex items-center justify-center gap-2 bg-brand-primary text-white font-medium text-sm leading-5 px-4 py-2 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition-colors"
           >
-            Entrar
+            {carregando ? 'Entrando...' : 'Entrar'}
             <ArrowRightIcon />
           </button>
         </div>

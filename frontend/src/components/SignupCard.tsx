@@ -30,19 +30,24 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
     try {
       const response = await fetch('http://localhost:3000/auth/cadastro', {
         method: 'POST',
-        header: {
+        headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ nome, email, senha }),
-
       })
 
       const data = await response.json()
       
       if (!response.ok) {
-        throw new Error(data.mensagem || 'Ocorreu um erro durante o cadastro')
-      }
+        const mensagensBackend = Array.isArray(data.message)
+          ? data.message
+          : data.message
+            ? [data.message]
+            : ['Ocorreu um erro de validação.']
 
+        throw new Error(mensagensBackend.join('\n'))
+      }
+      
       alert('Cadastro realizado com sucesso! Faça login para continuar.')
       onNavigate?.('login')
     } catch (error: any) {
@@ -76,22 +81,34 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
+        {erro && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm whitespace-pre-line">
+            {erro}
+          </div>
+        )}
+
         <InputField
           label="Nome Completo"
           type="text"
           placeholder="Ex: João da Silva"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
         />
 
         <InputField
           label="E-mail Institucional"
           type="email"
           placeholder="joao.silva@aluno.edu.br"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <InputField
           label="Senha"
           type={showPassword ? 'text' : 'password'}
           placeholder="••••••••"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
           rightIcon={
             <button
               type="button"
@@ -108,14 +125,17 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
             label="Confirmar Senha"
             type="password"
             placeholder="••••••••"
+            value={confirmarSenha}
+            onChange={(e) => setConfirmarSenha(e.target.value)}
           />
         </div>
 
         <button
           type="submit"
+          disabled={carregando}
           className="w-full bg-brand-accent text-white font-normal text-base leading-6 py-[14px] rounded-lg shadow-[0px_4px_6px_-1px_rgba(79,70,229,0.2),0px_2px_4px_-2px_rgba(79,70,229,0.2)] hover:bg-indigo-700 active:bg-indigo-800 transition-colors"
         >
-          Criar Conta
+          {carregando ? 'Criando...' : 'Criar Conta'}
         </button>
       </form>
 
