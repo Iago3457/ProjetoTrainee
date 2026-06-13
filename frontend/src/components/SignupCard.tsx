@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
 import { GraduationCapIcon, EyeOffIcon } from '../assets/icons'
 import InputField from './InputField'
 import { Page } from '../types'
@@ -9,6 +9,54 @@ interface SignupCardProps {
 
 export default function SignupCard({ onNavigate }: SignupCardProps) {
   const [showPassword, setShowPassword] = useState(false)
+
+  const [nome, setNome] = useState('')
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+  const [confirmarSenha, setConfirmarSenha] = useState('')
+  const [erro, setErro] = useState('')
+  const [carregando, setCarregando] = useState(false)
+
+   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setErro('')
+
+    if (senha !== confirmarSenha) {
+      return setErro('As senhas não coincidem')
+    }
+
+    setCarregando(true)
+
+    try {
+      const response = await fetch('http://localhost:3000/auth/cadastro', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nome, email, senha }),
+      })
+
+      const data = await response.json()
+      
+      if (!response.ok) {
+        const mensagensBackend = Array.isArray(data.message)
+          ? data.message
+          : data.message
+            ? [data.message]
+            : ['Ocorreu um erro de validação.']
+
+        throw new Error(mensagensBackend.join('\n'))
+      }
+      
+      alert('Cadastro realizado com sucesso! Faça login para continuar.')
+      onNavigate?.('login')
+    } catch (error: any) {
+      setErro(error.message || 'Ocorreu um erro durante o cadastro')
+    } finally {
+      setCarregando(false)
+    }
+
+  }
 
   return (
     <div className="bg-white border border-[rgba(199,196,216,0.4)] rounded-2xl shadow-[0px_25px_50px_-12px_rgba(79,70,229,0.05)] flex flex-col gap-8 p-6 sm:p-[41px]">
@@ -32,23 +80,35 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
         </p>
       </div>
 
-      <div className="flex flex-col gap-5 w-full">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
+        {erro && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm whitespace-pre-line">
+            {erro}
+          </div>
+        )}
+
         <InputField
           label="Nome Completo"
           type="text"
           placeholder="Ex: João da Silva"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
         />
 
         <InputField
           label="E-mail Institucional"
           type="email"
           placeholder="joao.silva@aluno.edu.br"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <InputField
           label="Senha"
           type={showPassword ? 'text' : 'password'}
           placeholder="••••••••"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
           rightIcon={
             <button
               type="button"
@@ -65,16 +125,19 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
             label="Confirmar Senha"
             type="password"
             placeholder="••••••••"
+            value={confirmarSenha}
+            onChange={(e) => setConfirmarSenha(e.target.value)}
           />
         </div>
 
         <button
           type="submit"
+          disabled={carregando}
           className="w-full bg-brand-accent text-white font-normal text-base leading-6 py-[14px] rounded-lg shadow-[0px_4px_6px_-1px_rgba(79,70,229,0.2),0px_2px_4px_-2px_rgba(79,70,229,0.2)] hover:bg-indigo-700 active:bg-indigo-800 transition-colors"
         >
-          Criar Conta
+          {carregando ? 'Criando...' : 'Criar Conta'}
         </button>
-      </div>
+      </form>
 
       <div className="pt-2">
         <div className="border-t border-[rgba(199,196,216,0.2)] pt-6 w-full">

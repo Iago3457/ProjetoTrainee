@@ -1,15 +1,13 @@
-import { ReactNode } from 'react'
+import { ReactNode, InputHTMLAttributes } from 'react'
 
-interface InputFieldProps {
+interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
   icon?: ReactNode
   rightIcon?: ReactNode
   rightElement?: ReactNode
-  type?: string
-  placeholder?: string
 }
 
-export default function InputField({ label, icon, rightIcon, rightElement, type = 'text', placeholder }: InputFieldProps) {
+export default function InputField({ label, icon, rightIcon, rightElement, type = 'text', ...props }: InputFieldProps) {
   const withLeftIcon = Boolean(icon)
 
   const inputClasses = [
@@ -45,8 +43,8 @@ export default function InputField({ label, icon, rightIcon, rightElement, type 
         )}
         <input
           type={type}
-          placeholder={placeholder}
           className={inputClasses}
+          {...props}
         />
         {rightIcon && (
           <div className="absolute inset-y-0 right-0 flex items-center pr-4">
