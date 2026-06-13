@@ -9,7 +9,7 @@ export class ZodValidationPipe implements PipeTransform {
         const parsedValue = this.schema.parse(value);
         return parsedValue;
     } catch (error) {
-        const formatErros = error.errors.map(err => ({
+        const formatErros = error.errors.map((err: any) => ({
             campo: err.path.join('.'),
             mensagem: err.message,
         }));

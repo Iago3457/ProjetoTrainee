@@ -11,7 +11,7 @@ export class AuthController {
     @Post('cadastro')
     @UsePipes(new ZodValidationPipe(cadastroSchema))
     async cadastrar(@Body() dados: CadastroDto) {
-        return {mensagem: 'Dados validados com sucesso no cadastro!', dados};
+        return this.authService.cadastrar(dados);
     }
 
     @Post('login')
