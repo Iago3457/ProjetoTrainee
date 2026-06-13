@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
 import { GraduationCapIcon, EyeOffIcon } from '../assets/icons'
 import InputField from './InputField'
 import { Page } from '../types'
@@ -9,6 +9,49 @@ interface SignupCardProps {
 
 export default function SignupCard({ onNavigate }: SignupCardProps) {
   const [showPassword, setShowPassword] = useState(false)
+
+  const [nome, setNome] = useState('')
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+  const [confirmarSenha, setConfirmarSenha] = useState('')
+  const [erro, setErro] = useState('')
+  const [carregando, setCarregando] = useState(false)
+
+   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setErro('')
+
+    if (senha !== confirmarSenha) {
+      return setErro('As senhas não coincidem')
+    }
+
+    setCarregando(true)
+
+    try {
+      const response = await fetch('http://localhost:3000/auth/cadastro', {
+        method: 'POST',
+        header: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nome, email, senha }),
+
+      })
+
+      const data = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(data.mensagem || 'Ocorreu um erro durante o cadastro')
+      }
+
+      alert('Cadastro realizado com sucesso! Faça login para continuar.')
+      onNavigate?.('login')
+    } catch (error: any) {
+      setErro(error.message || 'Ocorreu um erro durante o cadastro')
+    } finally {
+      setCarregando(false)
+    }
+
+  }
 
   return (
     <div className="bg-white border border-[rgba(199,196,216,0.4)] rounded-2xl shadow-[0px_25px_50px_-12px_rgba(79,70,229,0.05)] flex flex-col gap-8 p-6 sm:p-[41px]">
@@ -32,7 +75,7 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
         </p>
       </div>
 
-      <div className="flex flex-col gap-5 w-full">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
         <InputField
           label="Nome Completo"
           type="text"
@@ -74,7 +117,7 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
         >
           Criar Conta
         </button>
-      </div>
+      </form>
 
       <div className="pt-2">
         <div className="border-t border-[rgba(199,196,216,0.2)] pt-6 w-full">

@@ -43,7 +43,6 @@ export default function InputField({ label, icon, rightIcon, rightElement, type 
         )}
         <input
           type={type}
-          placeholder={placeholder}
           className={inputClasses}
           {...props}
         />

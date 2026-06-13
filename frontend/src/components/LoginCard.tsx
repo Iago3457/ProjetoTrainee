@@ -1,4 +1,4 @@
-import { FormEvent } from 'react'
+import { FormEvent, useState } from 'react'
 import { GraduationCapIcon, EmailIcon, LockIcon, ArrowRightIcon } from '../assets/icons'
 import InputField from './InputField'
 import { Page } from '../types'
@@ -64,7 +64,7 @@ export default function LoginCard({ onNavigate }: LoginCardProps) {
           type="email"
           placeholder="seu@email.com"
           value={email}
-          onChange = {(e React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
           required
         />
 
@@ -75,7 +75,7 @@ export default function LoginCard({ onNavigate }: LoginCardProps) {
           placeholder="••••••••"
           rightElement="Esqueceu a senha?"
           value={senha}
-          onChange = {(e React.ChangeEvent<HTMLInputElement>) => setSenha(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSenha(e.target.value)}
           required
          />
 
