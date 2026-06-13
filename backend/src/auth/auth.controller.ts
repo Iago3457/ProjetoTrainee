@@ -17,6 +17,6 @@ export class AuthController {
     @Post('login')
     @UsePipes(new ZodValidationPipe(loginSchema))
     async login(@Body() dados: LoginDto) {
-        return {mensagem: 'Dados validados com sucesso no login!', dados};
+        return this.authService.login(dados);
     }
 }
