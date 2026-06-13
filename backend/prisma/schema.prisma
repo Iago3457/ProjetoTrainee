@@ -11,3 +11,52 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Aluno {
+  id String @id @default(uuid())
+  nome String
+  email String @unique
+  senha String
+
+  matriculas Matricula[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Disciplina {
+  id String @id @default(uuid())
+  codigo String @unique
+  nome String
+  creditos Int
+  vagas Int
+  horario String //tabela de horários?
+  
+  preRequisitoId String?
+  preRequisito Disciplina? @relation("PreRequisito", fields: [preRequisitoId], references: [id])
+  dependentes Disciplina[] @relation("PreRequisito")
+
+  matriculas Matricula[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Matricula {
+  id String @id @default(uuid())
+  alunoId String
+  aluno Aluno @relation(fields: [alunoId], references: [id])
+
+  disciplinaID String
+  disciplina Disciplina @relation(fields: [disciplinaID], references: [id])
+
+  status String // "inscrito", "aprovado", "reprovado", etc
+
+  ano Int
+  semestre Int 
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique ([alunoId, disciplinaID, semestre, ano]) // Um aluno só pode se matricular uma vez em uma disciplina
+}
