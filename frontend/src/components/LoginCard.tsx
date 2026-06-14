@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { useState } from 'react'
 import { GraduationCapIcon, EmailIcon, LockIcon, ArrowRightIcon } from '../assets/icons'
 import InputField from './InputField'
 import { Page } from '../types'
@@ -13,7 +13,7 @@ export default function LoginCard({ onNavigate }: LoginCardProps) {
   const [erro, setErro] = useState('')
   const [carregando, setCarregando] = useState(false)
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
     setCarregando(true)
     setErro('')
