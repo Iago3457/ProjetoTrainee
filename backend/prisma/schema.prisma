@@ -15,6 +15,11 @@ model Aluno {
   id String @id @default(uuid())
   nome String
   email String @unique
+  ra String @unique
+  periodo String
+  curso String? // Criar Tabela de Curso depois?
+  avatar String?
+  semestre String
   senha String
 
   matriculas Matricula[]
