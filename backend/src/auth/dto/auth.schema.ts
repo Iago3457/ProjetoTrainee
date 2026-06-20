@@ -11,7 +11,7 @@ export const cadastroSchema = z.object({
         if (partes.length !== 2) return false; 
         
         const dominioEmail = partes[1]; 
-        return dominiosPermitidos.includes(dominioEmail);
+        return dominiosPermitidos.some(dominioPermitido => dominioPermitido === dominioEmail || dominioEmail.endsWith('.' + dominioPermitido));
       },
       { error: 'Por favor, utilize um e-mail válido de uma instituição de ensino reconhecida.' }
   ),
