@@ -10,4 +10,6 @@ export interface User {
   semestre: string
   password: string
   avatar: string | null
+  creditos: number
 }
+
