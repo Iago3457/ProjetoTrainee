@@ -77,4 +77,26 @@ export class AuthService {
             access_token: this.jwtService.sign(payload),
         }
     }
+
+    async getPerfil(alunoId: string) {
+        const aluno = await this.prisma.aluno.findUnique({
+            where: { id: alunoId },
+            select: {
+                id: true,
+                nome: true,
+                email: true,
+                ra: true,
+                periodo: true,
+                semestre: true,
+                curso: true,
+                avatar: true,
+            }
+        });
+
+        if (!aluno) {
+            throw new UnauthorizedException('Aluno não encontrado');
+        }
+
+        return aluno;
+    }
 }
