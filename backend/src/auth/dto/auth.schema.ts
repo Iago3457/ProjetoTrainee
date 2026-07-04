@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ApiProperty } from '@nestjs/swagger';
 import universidades from '../resources/universities.json'; //importa um JSON com as universidades e seus domínios
 
 const dominiosPermitidos = universidades.flatMap((uni: any) => uni.domains); //coloca todos os dominios de universidades em um array
@@ -18,11 +19,26 @@ export const cadastroSchema = z.object({
   senha: z.string().min(6, { error: 'Senha deve ter no mínimo 6 caracteres' }),
 });
 
-export type CadastroDto = z.infer<typeof cadastroSchema>;
-
 export const loginSchema = z.object({
     email: z.email({ error: 'Email inválido' }),
     senha: z.string().min(1, { error: 'Senha é obrigatória' }),
 });
 
-export type LoginDto = z.infer<typeof loginSchema>;
+export class CadastroDto {
+  @ApiProperty({ example: 'João Silva', description: 'Nome completo do aluno' })
+  nome!: string;
+
+  @ApiProperty({ example: 'joao.silva@unicamp.br', description: 'E-mail acadêmico válido' })
+  email!: string;
+
+  @ApiProperty({ example: 'senha123', description: 'Senha com mínimo de 6 caracteres' })
+  senha!: string;
+}
+
+export class LoginDto {
+  @ApiProperty({ example: 'joao.silva@unicamp.br', description: 'E-mail cadastrado' })
+  email!: string;
+
+  @ApiProperty({ example: 'senha123', description: 'Senha cadastrada' })
+  senha!: string;
+}

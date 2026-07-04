@@ -25,6 +25,16 @@ function getInitials(name: string): string {
 
 export default function DashboardHeader({ user, activePage = 'catalogo', onNavigate }: DashboardHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    if (onNavigate) {
+      onNavigate('login');
+    } else {
+      window.location.reload();
+    }
+  }
 
   const navLinks: NavLink[] = [
     { label: 'Catálogo', pageId: 'catalogo', targetPage: 'dashboard', icon: <CatalogIcon /> },
@@ -110,11 +120,37 @@ export default function DashboardHeader({ user, activePage = 'catalogo', onNavig
               <HelpCircleIcon />
             </button>
 
-            {/* User avatar */}
-            <div className="w-9 h-9 rounded-full bg-brand-accent flex items-center justify-center shrink-0 ring-2 ring-brand-light cursor-pointer hover:ring-brand-primary/40 transition-all">
-              <span className="text-white text-xs font-semibold leading-none">
-                {getInitials(user.name)}
-              </span>
+            {/* User avatar with Dropdown */}
+            <div className="relative">
+              <div 
+                onClick={() => setUserMenuOpen((v) => !v)}
+                className="w-9 h-9 rounded-full bg-brand-accent flex items-center justify-center shrink-0 ring-2 ring-brand-light cursor-pointer hover:ring-brand-primary/40 transition-all"
+              >
+                <span className="text-white text-xs font-semibold leading-none select-none">
+                  {getInitials(user.name)}
+                </span>
+              </div>
+              
+              {userMenuOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setUserMenuOpen(false)} />
+                  <div className="absolute right-0 top-12 z-20 bg-white border border-ui-border rounded-lg shadow-lg py-1 min-w-[160px]">
+                    <div className="px-4 py-2 border-b border-ui-border">
+                      <p className="text-sm font-semibold text-ui-dark truncate">{user.name}</p>
+                      <p className="text-xs text-ui-muted truncate">{user.email}</p>
+                    </div>
+                    <button 
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        handleLogout();
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      Sair
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
