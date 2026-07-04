@@ -10,6 +10,7 @@ import { disciplinasService } from '../services/disciplinas.service'
 import { User, Page } from '../types'
 import { DisciplinaCardProps } from '../components/DisciplinaCard'
 import { matriculasService } from '../services/matriculas.service'
+import DisciplinaDetailModal from '../components/DisciplinaDetailModal'
 
 interface DashboardPageProps {
   onNavigate?: (page: Page) => void
@@ -24,18 +25,62 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
   const [enrolling, setEnrollingId] = useState<string | null>(null);
+  const [selectedDisciplinaId, setSelectedDisciplinaId] = useState<string | null>(null);
+
+  const carregarDados = async () => {
+    try {
+      setLoading(true);
+      setErro('');
+      
+      const perfil = await disciplinasService.getPerfil();
+      const catalogo = await disciplinasService.listarCatalogo(perfil.id);
+      
+      const mappedUser: User = {
+        id: perfil.id,
+        name: perfil.nome,
+        email: perfil.email,
+        matricula: perfil.ra,
+        curso: perfil.curso || 'Ciência da Computação',
+        periodo: perfil.periodo,
+        semestre: perfil.semestre,
+        password: '',
+        avatar: perfil.avatar,
+        creditos: catalogo.creditosAtuais
+      };
+      
+      setUser(mappedUser);
+      setDisciplinas(catalogo.disciplinas);
+      setCreditosAtuais(catalogo.creditosAtuais);
+    } catch (err: any) {
+      console.error(err);
+      setErro(
+        err.response?.data?.message || 
+        err.message || 
+        'Falha ao carregar dados do catálogo.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    carregarDados();
+  }, []);
+
+  const refreshCatalogo = async () => {
+    if (user) {
+      const dadosAtualizados = await disciplinasService.listarCatalogo(user.id.toString());
+      setDisciplinas(dadosAtualizados.disciplinas);
+      setCreditosAtuais(dadosAtualizados.creditosAtuais);
+    }
+  };
 
   const handleInscrever = async(disciplinaId: string) => {
     try {
       setEnrollingId(disciplinaId);
       await matriculasService.inscrever(disciplinaId);
       alert('Inscrição realizada com sucesso');
-
-      if (user) {
-        const dadosAtualizados = await disciplinasService.listarCatalogo(user.id.toString());
-        setDisciplinas(dadosAtualizados.disciplinas);
-        setCreditosAtuais(dadosAtualizados.creditosAtuais);
-      }
+      await refreshCatalogo();
     } catch (error: any) {
       const mensagemErro = error.response?.data?.message || 'Erro ao inscrever-se na disciplina';
       alert(mensagemErro);
@@ -43,50 +88,6 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
       setEnrollingId(null);
     }
   }
-  
-  useEffect(() => {
-    async function loadData() {
-      try {
-        setLoading(true);
-        setErro('');
-        
-        // Obtém o perfil
-        const perfil = await disciplinasService.getPerfil();
-        
-        // Obtém o catálogo de disciplinas
-        const catalogo = await disciplinasService.listarCatalogo(perfil.id);
-        
-        // Mapear UserProfile para a interface User do frontend
-        const mappedUser: User = {
-          id: perfil.id,
-          name: perfil.nome,
-          email: perfil.email,
-          matricula: perfil.ra,
-          curso: perfil.curso || 'Ciência da Computação',
-          periodo: perfil.periodo,
-          semestre: perfil.semestre,
-          password: '',
-          avatar: perfil.avatar,
-          creditos: catalogo.creditosAtuais
-        };
-        
-        setUser(mappedUser);
-        setDisciplinas(catalogo.disciplinas);
-        setCreditosAtuais(catalogo.creditosAtuais);
-      } catch (err: any) {
-        console.error(err);
-        setErro(
-          err.response?.data?.message || 
-          err.message || 
-          'Falha ao carregar dados do catálogo.'
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadData();
-  }, []);
 
   const filters = [
     { id: 'todos', label: 'Todos os Departamentos', icon: <FilterIcon /> },
@@ -96,13 +97,10 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const filteredDisciplinas = disciplinas.filter((d) => {
     const matchesSearch = d.nome.toLowerCase().includes(search.toLowerCase()) ||
                           d.codigo.toLowerCase().includes(search.toLowerCase());
-    
-    // Se o filtro de período ideal estiver ativo, e caso tivéssemos dados de período na disciplina,
-    // poderíamos aplicar um filtro extra aqui. Como não há, a busca textual já funciona perfeitamente.
     return matchesSearch;
   });
 
-  if (loading) {
+  if (loading && !user) {
     return (
       <div className="min-h-screen bg-ui-bg flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -113,7 +111,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
     );
   }
 
-  if (erro) {
+  if (erro && !user) {
     return (
       <div className="min-h-screen bg-ui-bg flex items-center justify-center p-4">
         <div className="bg-white border border-ui-border rounded-xl p-6 max-w-md w-full shadow-sm text-center">
@@ -136,7 +134,6 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
       {user && <DashboardHeader user={user} activePage="catalogo" onNavigate={onNavigate} />}
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-        {/* Top row: Heading + Credit Panel */}
         <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 sm:gap-6">
           <CatalogHeading semestre={user?.semestre || '2026.1'} />
 
@@ -145,9 +142,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
           </div>
         </div>
 
-        {/* Filter row: Filters left, Search right */}
         <div className="mt-6 sm:mt-8 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4">
-          {/* Filter pills — horizontal scroll on mobile */}
           <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible sm:flex-wrap">
             {filters.map((filter) => (
               <FilterPill 
@@ -160,14 +155,12 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
             ))}
           </div>
 
-          {/* Search bar */}
           <SearchBar 
             search={search} 
             setSearch={setSearch}
           />
         </div>
 
-        {/* Cards grid */}
         {filteredDisciplinas.length === 0 ? (
           <div className="mt-12 text-center py-12 border-2 border-dashed border-ui-border rounded-xl">
             <p className="text-ui-medium font-medium">Nenhuma disciplina encontrada.</p>
@@ -175,11 +168,25 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
         ) : (
           <div className="mt-6 sm:mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredDisciplinas.map((disciplina) => (
-              <DisciplinaCard key={disciplina.codigo} {...disciplina} onInscrever={() => handleInscrever(disciplina.id)} isEnrolling={enrolling === disciplina.id}/>
+              <DisciplinaCard 
+                key={disciplina.codigo} 
+                {...disciplina} 
+                onInscrever={() => handleInscrever(disciplina.id)} 
+                isEnrolling={enrolling === disciplina.id}
+                onVerDetalhes={() => setSelectedDisciplinaId(disciplina.id)}
+              />
             ))}
           </div>
         )}
       </main>
+
+      {selectedDisciplinaId && (
+        <DisciplinaDetailModal 
+          disciplinaId={selectedDisciplinaId}
+          onClose={() => setSelectedDisciplinaId(null)}
+          onInscricaoSuccess={refreshCatalogo}
+        />
+      )}
     </div>
   )
 }

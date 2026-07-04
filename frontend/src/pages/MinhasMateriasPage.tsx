@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react'
 import { disciplinasService } from '../services/disciplinas.service'
 import { matriculasService, MinhaMateria } from '../services/matriculas.service'
 import { User, Page } from '../types'
+import DisciplinaDetailModal from '../components/DisciplinaDetailModal'
 
 interface MinhasMateriasPageProps {
   onNavigate?: (page: Page) => void
@@ -19,6 +20,7 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
   const [cancelingId, setCancelingId] = useState<string | null>(null);
+  const [selectedDisciplinaId, setSelectedDisciplinaId] = useState<string | null>(null);
 
   const loadData = async () => {
     try {
@@ -77,7 +79,7 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
     }
   };
 
-  if (loading) {
+  if (loading && !user) {
     return (
       <div className="min-h-screen bg-ui-bg flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -88,7 +90,7 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
     );
   }
 
-  if (erro) {
+  if (erro && !user) {
     return (
       <div className="min-h-screen bg-ui-bg flex items-center justify-center p-4">
         <div className="bg-white border border-ui-border rounded-xl p-6 max-w-md w-full shadow-sm text-center">
@@ -111,7 +113,6 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
       {user && <DashboardHeader user={user} activePage="minhas-materias" onNavigate={onNavigate} />}
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-        {/* Top row: Heading + Credit Panel */}
         <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 sm:gap-6">
           <MinhasMateriasHeading semestre={user?.semestre || '2026.1'} />
 
@@ -120,12 +121,10 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
           </div>
         </div>
 
-        {/* Mobile: Credit info text */}
         <div className="sm:hidden mt-3 text-xs text-ui-muted bg-white border border-ui-border rounded-lg p-3">
           Você está dentro do limite recomendado de créditos.
         </div>
 
-        {/* Cards grid */}
         {materias.length === 0 ? (
           <div className="mt-12 text-center py-12 border-2 border-dashed border-ui-border rounded-xl">
             <p className="text-ui-medium font-medium">Você ainda não está inscrito em nenhuma disciplina.</p>
@@ -139,13 +138,13 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
                 {...materia}
                 onCancelar={handleCancelar}
                 isCanceling={cancelingId === materia.matriculaId}
+                onVerDetalhes={() => setSelectedDisciplinaId(materia.disciplinaId)}
               />
             ))}
           </div>
         )}
       </main>
 
-      {/* Mobile: Imprimir Comprovante button */}
       {materias.length > 0 && (
         <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-ui-border px-4 py-3 z-10">
           <button className="w-full flex items-center justify-center gap-2 bg-ui-dark text-white font-semibold text-sm py-3 rounded-xl hover:bg-gray-800 active:scale-[0.98] transition-all">
@@ -153,6 +152,14 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
             Imprimir Comprovante
           </button>
         </div>
+      )}
+
+      {selectedDisciplinaId && (
+        <DisciplinaDetailModal 
+          disciplinaId={selectedDisciplinaId}
+          onClose={() => setSelectedDisciplinaId(null)}
+          onInscricaoSuccess={loadData}
+        />
       )}
     </div>
   )

@@ -18,6 +18,26 @@ export interface UserProfile {
     avatar: string | null;
 }
 
+export interface PreRequisitoDetalhe {
+    codigo: string;
+    nome: string;
+    atendido: boolean;
+}
+
+export interface DisciplinaDetalhes {
+    id: string;
+    codigo: string;
+    nome: string;
+    descricao: string | null;
+    professor: string | null;
+    creditos: number;
+    vagasTotais: number;
+    vagasOcupadas: number;
+    horario: string;
+    preRequisitos: PreRequisitoDetalhe[];
+    statusAluno: string | null;
+}
+
 export const disciplinasService = {
     listarCatalogo: async (alunoId: string): Promise<ListarCatalogoResponse> => {
         const response = await api.get('/disciplinas', {
@@ -44,6 +64,11 @@ export const disciplinasService = {
             limiteCreditosAtingido,
             disciplinas: disciplinasMapeadas
         };
+    },
+
+    buscarDetalhes: async (disciplinaId: string): Promise<DisciplinaDetalhes> => {
+        const response = await api.get(`/disciplinas/${disciplinaId}`);
+        return response.data;
     },
 
     getPerfil: async (): Promise<UserProfile> => {
