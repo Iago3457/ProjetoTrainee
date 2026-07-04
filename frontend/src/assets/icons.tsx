@@ -209,3 +209,32 @@ export function InfoCircleIcon({ className }: { className?: string }) {
     </svg>
   )
 }
+
+export function CalendarIcon({ className }: { className?: string }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" className={className}>
+      <rect x="3" y="4" width="18" height="18" rx="2" strokeWidth="2" />
+      <path d="M16 2v4M8 2v4M3 10h18" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+export function PrinterIcon({ className }: { className?: string }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" className={className}>
+      <path d="M6 9V2h12v7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <rect x="2" y="9" width="20" height="8" rx="2" strokeWidth="2" />
+      <path d="M6 17v5h12v-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+export function MoreVerticalIcon({ className }: { className?: string }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <circle cx="12" cy="5" r="1.5" />
+      <circle cx="12" cy="12" r="1.5" />
+      <circle cx="12" cy="19" r="1.5" />
+    </svg>
+  )
+}
