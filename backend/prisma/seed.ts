@@ -90,16 +90,39 @@ async function main() {
             preRequisitoId: cap.id
         },
     });
+    const calc3 = await prisma.disciplina.create({
+        data: {
+            codigo: 'MAT103',
+            nome: 'Cálculo Vetorial e Geometria Analítica',
+            descricao: 'Estudo de vetores, retas e planos no espaço. Funções de várias variáveis, derivadas parciais e integrais múltiplas.',
+            professor: 'Prof. Dr. Ricardo Almeida',
+            creditos: 6,
+            vagas: 40,
+            horario: 'Terça e Quinta. 08h-10h',
+            preRequisitoId: calc2.id
+        },
+    });
         
     console.log('Seed concluído!');
 
     console.log('Semeando matrículas...');
     
+    // Matérias concluídas (Aprovadas em semestres anteriores)
     await prisma.matricula.create({
         data: {
             alunoId: alunosCriados[0].id,
             disciplinaID: calc1.id,
-            status: 'inscrito',
+            status: 'aprovado',
+            ano: 2025,
+            semestre: 1,
+        },
+    });
+
+    await prisma.matricula.create({
+        data: {
+            alunoId: alunosCriados[0].id,
+            disciplinaID: calc2.id,
+            status: 'aprovado',
             ano: 2025,
             semestre: 2,
         },
@@ -109,9 +132,30 @@ async function main() {
         data: {
             alunoId: alunosCriados[0].id,
             disciplinaID: cap.id,
-            status: 'inscrito',
+            status: 'aprovado',
             ano: 2025,
             semestre: 2,
+        },
+    });
+
+    // Matérias atuais (Inscrito no semestre atual 2026.1 para aparecer no Minhas Matérias)
+    await prisma.matricula.create({
+        data: {
+            alunoId: alunosCriados[0].id,
+            disciplinaID: aed.id,
+            status: 'inscrito',
+            ano: 2026,
+            semestre: 1,
+        },
+    });
+
+    await prisma.matricula.create({
+        data: {
+            alunoId: alunosCriados[0].id,
+            disciplinaID: calc3.id,
+            status: 'inscrito',
+            ano: 2026,
+            semestre: 1,
         },
     });
 
