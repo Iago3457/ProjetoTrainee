@@ -7,11 +7,15 @@ import SearchBar from '../components/SearchBar'
 import DisciplinaCard from '../components/DisciplinaCard'
 import { FilterIcon } from '../assets/icons'
 import { disciplinasService } from '../services/disciplinas.service'
-import { User } from '../types'
+import { User, Page } from '../types'
 import { DisciplinaCardProps } from '../components/DisciplinaCard'
 import { matriculasService } from '../services/matriculas.service'
 
-export default function DashboardPage() {
+interface DashboardPageProps {
+  onNavigate?: (page: Page) => void
+}
+
+export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('periodo');
   const [user, setUser] = useState<User | null>(null);
@@ -129,7 +133,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-ui-bg">
-      {user && <DashboardHeader user={user} />}
+      {user && <DashboardHeader user={user} activePage="catalogo" onNavigate={onNavigate} />}
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         {/* Top row: Heading + Credit Panel */}

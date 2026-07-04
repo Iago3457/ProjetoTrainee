@@ -1,15 +1,17 @@
 import { useState } from 'react'
 import { GraduationCapIcon, MenuIcon, BellIcon, HelpCircleIcon, SearchIcon, CatalogIcon, BookOpenIcon, UserIcon } from '../assets/icons'
-import { User } from '../types'
+import { User, Page } from '../types'
 
 interface DashboardHeaderProps {
   user: User
+  activePage?: 'catalogo' | 'minhas-materias' | 'perfil'
+  onNavigate?: (page: Page) => void
 }
 
 interface NavLink {
   label: string
-  href: string
-  active: boolean
+  pageId: 'catalogo' | 'minhas-materias' | 'perfil'
+  targetPage: Page
   icon: React.ReactNode
 }
 
@@ -21,14 +23,21 @@ function getInitials(name: string): string {
     .join('')
 }
 
-export default function DashboardHeader({ user }: DashboardHeaderProps) {
+export default function DashboardHeader({ user, activePage = 'catalogo', onNavigate }: DashboardHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const navLinks: NavLink[] = [
-    { label: 'Catálogo', href: '#', active: true, icon: <CatalogIcon /> },
-    { label: 'Minhas Matérias', href: '#', active: false, icon: <BookOpenIcon /> },
-    { label: 'Perfil', href: '#', active: false, icon: <UserIcon /> },
+    { label: 'Catálogo', pageId: 'catalogo', targetPage: 'dashboard', icon: <CatalogIcon /> },
+    { label: 'Minhas Matérias', pageId: 'minhas-materias', targetPage: 'minhas-materias', icon: <BookOpenIcon /> },
+    { label: 'Perfil', pageId: 'perfil', targetPage: 'dashboard', icon: <UserIcon /> },
   ]
+
+  const handleNav = (link: NavLink) => {
+    if (onNavigate) {
+      onNavigate(link.targetPage)
+    }
+    setMobileMenuOpen(false)
+  }
 
   return (
     <header className="bg-white border-b border-ui-border sticky top-0 z-10">
@@ -59,19 +68,19 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
             {/* Nav links — desktop */}
             <nav className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => (
-                <a
+                <button
                   key={link.label}
-                  href={link.href}
+                  onClick={() => handleNav(link)}
                   className={[
                     'flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                    link.active
+                    activePage === link.pageId
                       ? 'text-brand-primary'
                       : 'text-ui-medium hover:bg-ui-bg hover:text-ui-dark',
                   ].join(' ')}
                 >
                   {link.icon}
                   {link.label}
-                </a>
+                </button>
               ))}
             </nav>
           </div>
@@ -114,19 +123,19 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         {mobileMenuOpen && (
           <nav className="md:hidden border-t border-ui-border py-2 flex flex-col gap-1">
             {navLinks.map((link) => (
-              <a
+              <button
                 key={link.label}
-                href={link.href}
+                onClick={() => handleNav(link)}
                 className={[
-                  'flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                  link.active
+                  'flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors text-left',
+                  activePage === link.pageId
                     ? 'bg-brand-light text-brand-primary'
                     : 'text-ui-medium hover:bg-ui-bg',
                 ].join(' ')}
               >
                 {link.icon}
                 {link.label}
-              </a>
+              </button>
             ))}
           </nav>
         )}
