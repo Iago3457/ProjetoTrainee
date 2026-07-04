@@ -125,7 +125,13 @@ export class MatriculasService {
         if (matricula.status !== 'inscrito') {
             throw new BadRequestException('Somente matrículas com status "inscrito" podem ser canceladas');
         }
+        const anoAtual = new Date().getFullYear();
+        const semestreAtual = 1;
 
+        if (matricula.ano !== anoAtual || matricula.semestre !== semestreAtual) {
+            throw new BadRequestException('Somente matrículas do semestre atual podem ser canceladas');
+        }
+        
         await this.prisma.matricula.delete({
             where: { id: matriculaId },
         });
