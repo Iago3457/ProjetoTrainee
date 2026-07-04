@@ -45,7 +45,7 @@ export class DisciplinasService {
 
             if (disciplina.preRequisitoId) {
                 const passouNoRequisito = historicoAluno.some(
-                    (m) => m.disciplinaID === disciplina.preRequisitoId && m.status === 'aprovado'
+                    (m) => m.disciplinaID === disciplina.preRequisitoId && (m.status === 'aprovado' || m.status === 'concluida')
                 );
 
                 infoPreRequisito = {
