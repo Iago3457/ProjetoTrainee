@@ -32,6 +32,8 @@ model Disciplina {
   id String @id @default(uuid())
   codigo String @unique
   nome String
+  descricao String?
+  professor String?
   creditos Int
   vagas Int
   horario String //tabela de horários?

@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards, Param, Request } from '@nestjs/common';
 import { DisciplinasService } from './disciplinas.service';
 import { AuthGuard } from '../auth/auth.guard';
 
@@ -14,5 +14,12 @@ export class DisciplinasController {
         }
 
         return this.disciplinasService.listarCatalogo(alunoIdQuery);
+    }
+
+    @UseGuards(AuthGuard)
+    @Get(':id')
+    async getDetalhes(@Param('id') id: string, @Request() req) {
+        const alunoId = req.user.sub;
+        return this.disciplinasService.buscarDetalhes(id, alunoId);
     }
 }

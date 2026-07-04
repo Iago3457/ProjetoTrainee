@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -84,6 +84,81 @@ export class DisciplinasService {
             creditosAtuais,
             limiteCreditosAtingido,
             disciplinas: catalogoFormatado,
+        };
+    }
+
+    async buscarDetalhes(disciplinaId: string, alunoId: string) {
+        const semestreAtual = 1;
+        const anoAtual = 2026;
+
+        const disciplina = await this.prisma.disciplina.findUnique({
+            where: { id: disciplinaId },
+            include: {
+                preRequisito: true,
+                dependentes: true,
+                matriculas: {
+                    where: { status: 'inscrito', semestre: semestreAtual, ano: anoAtual },
+                },
+            },
+        });
+
+        if (!disciplina) {
+            throw new NotFoundException('Disciplina não encontrada');
+        }
+
+        // Buscar a cadeia completa de pré-requisitos
+        const preRequisitos: { codigo: string; nome: string; atendido: boolean }[] = [];
+        let currentDisc = disciplina;
+
+        while (currentDisc.preRequisitoId) {
+            const preReq = await this.prisma.disciplina.findUnique({
+                where: { id: currentDisc.preRequisitoId },
+                include: { preRequisito: true },
+            });
+
+            if (!preReq) break;
+
+            const alunoPassou = await this.prisma.matricula.findFirst({
+                where: {
+                    alunoId,
+                    disciplinaID: preReq.id,
+                    status: { in: ['aprovado', 'concluida'] },
+                },
+            });
+
+            preRequisitos.unshift({
+                codigo: preReq.codigo,
+                nome: preReq.nome,
+                atendido: !!alunoPassou,
+            });
+
+            currentDisc = preReq as typeof currentDisc;
+        }
+
+        // Status do aluno
+        const matriculaAtual = await this.prisma.matricula.findFirst({
+            where: {
+                alunoId,
+                disciplinaID: disciplinaId,
+                semestre: semestreAtual,
+                ano: anoAtual,
+            },
+        });
+
+        const vagasOcupadas = disciplina.matriculas.length;
+
+        return {
+            id: disciplina.id,
+            codigo: disciplina.codigo,
+            nome: disciplina.nome,
+            descricao: disciplina.descricao,
+            professor: disciplina.professor,
+            creditos: disciplina.creditos,
+            vagasTotais: disciplina.vagas,
+            vagasOcupadas,
+            horario: disciplina.horario,
+            preRequisitos,
+            statusAluno: matriculaAtual?.status || null,
         };
     }
 }

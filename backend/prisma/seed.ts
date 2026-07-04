@@ -44,25 +44,49 @@ async function main() {
 
     const calc1 = await prisma.disciplina.create({
         data: {
-            codigo: 'MAT101', nome: 'Cálculo Diferencial e Integral I', creditos: 6, vagas: 40, horario: 'Segunda, Quarta e Sexta. 08h-10h'
+            codigo: 'MAT101',
+            nome: 'Cálculo Diferencial e Integral I',
+            descricao: 'Introdução ao cálculo diferencial e integral de funções de uma variável real. Aborda limites, continuidade, derivadas e integrais, com aplicações em problemas de otimização e áreas.',
+            professor: 'Prof. Dr. Ricardo Almeida',
+            creditos: 6,
+            vagas: 40,
+            horario: 'Segunda, Quarta e Sexta. 08h-10h'
         },
     });
     const cap = await prisma.disciplina.create({
         data: { 
-            codigo: 'BCC101', nome: 'Construção de Algoritmos e Programação', creditos: 8, vagas: 40, horario: 'Segunda e Quarta. 14h-18h'
+            codigo: 'BCC101',
+            nome: 'Construção de Algoritmos e Programação',
+            descricao: 'Fundamentos de lógica de programação e resolução de problemas computacionais. Introdução à linguagem C, estruturas de controle, funções, vetores e matrizes.',
+            professor: 'Profa. Dra. Ana Paula Ferreira',
+            creditos: 8,
+            vagas: 40,
+            horario: 'Segunda e Quarta. 14h-18h'
         },
     });
 
     const calc2 = await prisma.disciplina.create({
         data: {
-            codigo: 'MAT102', nome: 'Cálculo Diferencial e Séries', creditos: 6, vagas: 40, horario: 'Segunda, Quarta e Sexta. 08h-10h',
+            codigo: 'MAT102',
+            nome: 'Cálculo Diferencial e Séries',
+            descricao: 'Continuação do estudo de cálculo com foco em séries numéricas, sequências, séries de potências e séries de Taylor. Inclui técnicas de integração avançadas e aplicações.',
+            professor: 'Prof. Dr. Ricardo Almeida',
+            creditos: 6,
+            vagas: 40,
+            horario: 'Segunda, Quarta e Sexta. 08h-10h',
             preRequisitoId: calc1.id
         },
     });
 
     const aed = await prisma.disciplina.create({
         data: {
-            codigo: 'BCC102', nome: 'Algoritmos e Estruturas de Dados', creditos: 8, vagas: 40, horario: 'Terça e Quinta. 14h-18h',
+            codigo: 'BCC102',
+            nome: 'Algoritmos e Estruturas de Dados',
+            descricao: 'Estudo de estruturas de dados fundamentais (listas, pilhas, filas, árvores, grafos) e seus algoritmos associados. Análise de complexidade e técnicas de ordenação e busca.',
+            professor: 'Prof. Dr. Marcos Vinícius Costa',
+            creditos: 8,
+            vagas: 40,
+            horario: 'Terça e Quinta. 14h-18h',
             preRequisitoId: cap.id
         },
     });
