@@ -3,6 +3,7 @@ import EnrollButton from './EnrollButton';
 import { ClockIcon, CreditBookIcon, CheckCircleIcon, XCircleIcon, InfoCircleIcon } from '../assets/icons';
 
 export interface DisciplinaCardProps {
+  id: string;
   codigo: string;
   nome: string;
   vagasOcupadas: number;
@@ -12,11 +13,13 @@ export interface DisciplinaCardProps {
   statusInscricao: 'disponivel' | 'inscrito' | 'indisponivel';
   preRequisito?: { atendido: boolean; mensagem: string };
   limiteCreditosAtingido?: boolean;
+  onInscrever?: () => void;
+  isEnrolling?: boolean;
 }
 
 export default function DisciplinaCard({
   codigo, nome, vagasOcupadas, vagasTotais, periodo, creditos,
-  statusInscricao, preRequisito, limiteCreditosAtingido
+  statusInscricao, preRequisito, limiteCreditosAtingido, onInscrever, isEnrolling
 }: DisciplinaCardProps) {
   
   const isBloqueado = (preRequisito && !preRequisito.atendido) || (statusInscricao === 'indisponivel');
@@ -79,7 +82,7 @@ export default function DisciplinaCard({
         )}
       </div>
 
-      <EnrollButton status={buttonStatus} />
+      <EnrollButton status={buttonStatus} onClick={onInscrever} isLoading={isEnrolling}/>
       
     </div>
   );

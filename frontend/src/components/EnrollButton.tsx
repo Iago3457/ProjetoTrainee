@@ -3,9 +3,10 @@ import { CheckCircleIcon } from '../assets/icons';
 interface EnrollButtonProps {
   status: 'disponivel' | 'inscrito' | 'bloqueado';
   onClick?: () => void;
+  isLoading?: boolean;
 }
 
-export default function EnrollButton({ status, onClick }: EnrollButtonProps) {
+export default function EnrollButton({ status, onClick, isLoading }: EnrollButtonProps) {
   const baseClasses = "mt-auto w-full py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-colors";
   
   if (status === 'inscrito') {
@@ -26,8 +27,8 @@ export default function EnrollButton({ status, onClick }: EnrollButtonProps) {
 
   // Estado: Disponível
   return (
-    <button onClick={onClick} className={`${baseClasses} bg-brand-primary text-white hover:bg-brand-accent active:scale-[0.98]`}>
-      Inscrever-se
+    <button onClick={onClick} disabled={isLoading} className={`${baseClasses} bg-brand-primary text-white hover:bg-brand-accent ${isLoading ? 'opacity-70 cursor-wait' : ''} active:scale-[0.98]`}>
+      {isLoading ? 'Processando...' : 'Inscrever-se'}
     </button>
   );
 }

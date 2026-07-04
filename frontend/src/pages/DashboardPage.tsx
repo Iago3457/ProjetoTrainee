@@ -9,6 +9,7 @@ import { FilterIcon } from '../assets/icons'
 import { disciplinasService } from '../services/disciplinas.service'
 import { User } from '../types'
 import { DisciplinaCardProps } from '../components/DisciplinaCard'
+import { matriculasService } from '../services/matriculas.service'
 
 export default function DashboardPage() {
   const [search, setSearch] = useState('');
@@ -18,7 +19,27 @@ export default function DashboardPage() {
   const [creditosAtuais, setCreditosAtuais] = useState(0);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
+  const [enrolling, setEnrollingId] = useState<string | null>(null);
 
+  const handleInscrever = async(disciplinaId: string) => {
+    try {
+      setEnrollingId(disciplinaId);
+      await matriculasService.inscrever(disciplinaId);
+      alert('Inscrição realizada com sucesso');
+
+      if (user) {
+        const dadosAtualizados = await disciplinasService.listarCatalogo(user.id.toString());
+        setDisciplinas(dadosAtualizados.disciplinas);
+        setCreditosAtuais(dadosAtualizados.creditosAtuais);
+      }
+    } catch (error: any) {
+      const mensagemErro = error.response?.data?.message || 'Erro ao inscrever-se na disciplina';
+      alert(mensagemErro);
+    } finally {
+      setEnrollingId(null);
+    }
+  }
+  
   useEffect(() => {
     async function loadData() {
       try {
@@ -33,7 +54,7 @@ export default function DashboardPage() {
         
         // Mapear UserProfile para a interface User do frontend
         const mappedUser: User = {
-          id: 0,
+          id: perfil.id,
           name: perfil.nome,
           email: perfil.email,
           matricula: perfil.ra,
@@ -150,7 +171,7 @@ export default function DashboardPage() {
         ) : (
           <div className="mt-6 sm:mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredDisciplinas.map((disciplina) => (
-              <DisciplinaCard key={disciplina.codigo} {...disciplina} />
+              <DisciplinaCard key={disciplina.codigo} {...disciplina} onInscrever={() => handleInscrever(disciplina.id)} isEnrolling={enrolling === disciplina.id}/>
             ))}
           </div>
         )}

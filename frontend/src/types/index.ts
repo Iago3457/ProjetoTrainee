@@ -1,7 +1,7 @@
 export type Page = 'login' | 'signup' | 'dashboard'
 
 export interface User {
-  id: number
+  id: string | number
   name: string
   email: string
   matricula: string

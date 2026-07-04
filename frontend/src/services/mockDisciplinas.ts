@@ -2,6 +2,7 @@ import { DisciplinaCardProps } from "../components/DisciplinaCard";
 
 export const mockDisciplina: DisciplinaCardProps[] = [
   {
+    id: 'mock-1',
     codigo: 'COMP201',
     nome: 'Estrutura de Dados I',
     vagasOcupadas: 28,
@@ -12,6 +13,7 @@ export const mockDisciplina: DisciplinaCardProps[] = [
     preRequisito: { atendido: true, mensagem: 'Pré-requisito: COMP102 (Aprovado)' }
   },
   {
+    id: 'mock-2',
     codigo: 'MAT305',
     nome: 'Cálculo Numérico',
     vagasOcupadas: 40,
@@ -22,6 +24,7 @@ export const mockDisciplina: DisciplinaCardProps[] = [
     preRequisito: { atendido: false, mensagem: 'Falta: MAT201' }
   },
   {
+    id: 'mock-3',
     codigo: 'HUM104',
     nome: 'Filosofia da Tecnologia',
     vagasOcupadas: 10,
@@ -31,6 +34,7 @@ export const mockDisciplina: DisciplinaCardProps[] = [
     statusInscricao: 'disponivel',
   },
   {
+    id: 'mock-4',
     codigo: 'ENG202',
     nome: 'Sistemas Embarcados',
     vagasOcupadas: 35,
