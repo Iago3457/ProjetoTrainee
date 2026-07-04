@@ -5,6 +5,7 @@ import { useState } from 'react';
 interface MatriculaCardProps extends MinhaMateria {
   onCancelar: (matriculaId: string) => void;
   isCanceling: boolean;
+  onVerDetalhes?: () => void;
 }
 
 function StatusBadge({ status }: { status: string }) {
@@ -26,7 +27,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default function MatriculaCard({
-  matriculaId, codigo, nome, creditos, horario, status, semestre, onCancelar, isCanceling
+  matriculaId, codigo, nome, creditos, horario, status, semestre, onCancelar, isCanceling, onVerDetalhes
 }: MatriculaCardProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const canCancel = status === 'inscrito';
@@ -77,7 +78,10 @@ export default function MatriculaCard({
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
                 <div className="absolute right-0 top-8 z-20 bg-white border border-ui-border rounded-lg shadow-lg py-1 min-w-[160px]">
-                  <button className="w-full text-left px-4 py-2 text-sm text-ui-medium hover:bg-ui-bg transition-colors">
+                  <button 
+                    onClick={() => { setMenuOpen(false); onVerDetalhes?.(); }}
+                    className="w-full text-left px-4 py-2 text-sm text-ui-medium hover:bg-ui-bg transition-colors"
+                  >
                     Ver Detalhes
                   </button>
                   {canCancel && (
@@ -118,7 +122,10 @@ export default function MatriculaCard({
 
         {/* Action buttons */}
         <div className="flex gap-3 mt-2">
-          <button className="flex-1 py-2.5 rounded-lg text-sm font-semibold border-2 border-brand-primary text-brand-primary hover:bg-brand-light transition-colors active:scale-[0.98]">
+          <button 
+            onClick={onVerDetalhes}
+            className="flex-1 py-2.5 rounded-lg text-sm font-semibold border-2 border-brand-primary text-brand-primary hover:bg-brand-light transition-colors active:scale-[0.98]"
+          >
             Ver Detalhes
           </button>
           {canCancel && (
