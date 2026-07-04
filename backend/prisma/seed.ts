@@ -55,13 +55,15 @@ async function main() {
 
     const calc2 = await prisma.disciplina.create({
         data: {
-            codigo: 'MAT102', nome: 'Cálculo Diferencial e Séries', creditos: 6, vagas: 40, horario: 'Segunda, Quarta e Sexta. 08h-10h'
+            codigo: 'MAT102', nome: 'Cálculo Diferencial e Séries', creditos: 6, vagas: 40, horario: 'Segunda, Quarta e Sexta. 08h-10h',
+            preRequisitoId: calc1.id
         },
     });
 
     const aed = await prisma.disciplina.create({
         data: {
-            codigo: 'BCC102', nome: 'Algoritmos e Estruturas de Dados', creditos: 8, vagas: 40, horario: 'Terça e Quinta. 14h-18h'
+            codigo: 'BCC102', nome: 'Algoritmos e Estruturas de Dados', creditos: 8, vagas: 40, horario: 'Terça e Quinta. 14h-18h',
+            preRequisitoId: cap.id
         },
     });
         

@@ -1,0 +1,13 @@
+{
+  "name": "matricula-facil",
+  "version": "1.0.0",
+  "description": "Matricula Fácil Monorepo Root",
+  "private": true,
+  "scripts": {
+    "dev:backend": "npm run start:dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "seed": "npm run seed --prefix backend",
+    "db:push": "npx --prefix backend prisma db push",
+    "db:studio": "npx --prefix backend prisma studio"
+  }
+}

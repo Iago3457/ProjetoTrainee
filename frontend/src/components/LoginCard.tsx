@@ -37,7 +37,7 @@ export default function LoginCard({ onNavigate }: LoginCardProps) {
         throw new Error(mensagensBackend.join('\n'))
       }
  
-      localStorage.setItem('token', data.access_token)
+      localStorage.setItem('access_token', data.access_token)
       onNavigate?.('dashboard')
     } catch (error: any) {
       setErro(error.message || 'Ocorreu um erro durante o login')

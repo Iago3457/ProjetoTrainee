@@ -1,7 +1,7 @@
 export type Page = 'login' | 'signup' | 'dashboard'
 
 export interface User {
-  id: number
+  id: string | number
   name: string
   email: string
   matricula: string
@@ -10,4 +10,6 @@ export interface User {
   semestre: string
   password: string
   avatar: string | null
+  creditos: number
 }
+

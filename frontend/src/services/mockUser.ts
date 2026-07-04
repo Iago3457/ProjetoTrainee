@@ -10,6 +10,7 @@ const mockUser: User = {
   semestre: '2024.1',
   password: 'Aluno@2024',
   avatar: null,
+  creditos: 16,
 }
 
 export default mockUser
