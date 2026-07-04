@@ -10,7 +10,7 @@ export interface DisciplinaCardProps {
   vagasTotais: number;
   periodo: number | string;
   creditos: number;
-  statusInscricao: 'disponivel' | 'inscrito' | 'indisponivel';
+  statusInscricao: 'disponivel' | 'inscrito' | 'indisponivel' | 'concluido';
   preRequisito?: { atendido: boolean; mensagem: string };
   limiteCreditosAtingido?: boolean;
   onInscrever?: () => void;
@@ -25,8 +25,9 @@ export default function DisciplinaCard({
   
   const isBloqueado = (preRequisito && !preRequisito.atendido) || (statusInscricao === 'indisponivel');
   const isInscrito = statusInscricao === 'inscrito';
+  const isConcluido = statusInscricao === 'concluido';
   
-  const buttonStatus = isInscrito ? 'inscrito' : isBloqueado ? 'bloqueado' : 'disponivel';
+  const buttonStatus = isConcluido ? 'concluido' : isInscrito ? 'inscrito' : isBloqueado ? 'bloqueado' : 'disponivel';
 
   const vagasRestantes = vagasTotais - vagasOcupadas;
   const isCheio = vagasRestantes <= 0;
