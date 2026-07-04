@@ -32,6 +32,13 @@ export class MatriculasService {
             throw new ConflictException('Você já está inscrito nesta disciplina');
         }
 
+        const jaConcluiu = historicoAluno.some(
+            m => m.disciplinaID === disciplinaId && (m.status === 'aprovado' || m.status === 'concluida')
+        );
+        if (jaConcluiu) {
+            throw new ConflictException('Você já concluiu esta disciplina');
+        }
+
         const conflitoHorario = matriculasAtuais.find(
             m => m.disciplina.horario === disciplinaAlvo.horario
         );

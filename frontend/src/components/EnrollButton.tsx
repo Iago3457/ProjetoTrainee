@@ -1,7 +1,7 @@
 import { CheckCircleIcon } from '../assets/icons';
 
 interface EnrollButtonProps {
-  status: 'disponivel' | 'inscrito' | 'bloqueado';
+  status: 'disponivel' | 'inscrito' | 'bloqueado' | 'concluido';
   onClick?: () => void;
   isLoading?: boolean;
 }
@@ -9,6 +9,14 @@ interface EnrollButtonProps {
 export default function EnrollButton({ status, onClick, isLoading }: EnrollButtonProps) {
   const baseClasses = "mt-auto w-full py-2.5 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 transition-colors";
   
+  if (status === 'concluido') {
+    return (
+      <button disabled className={`${baseClasses} bg-green-100 text-green-700 border border-green-200`}>
+        <CheckCircleIcon className="text-green-600" /> Concluída
+      </button>
+    );
+  }
+
   if (status === 'inscrito') {
     return (
       <button disabled className={`${baseClasses} bg-brand-light text-brand-primary border border-brand-primary/20`}>

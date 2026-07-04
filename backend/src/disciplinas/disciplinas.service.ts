@@ -56,15 +56,21 @@ export class DisciplinasService {
                 };
             }
 
-            const vagasOcupadas = disciplina.matriculas.length;
+            const jaConcluiu = historicoAluno.some(
+                m => m.disciplinaID === disciplina.id && (m.status === 'aprovado' || m.status === 'concluida')
+            );
 
             let statusInscricao = 'disponivel';
 
-            if (jaInscrito) {
+            if (jaConcluiu) {
+                statusInscricao = 'concluido';
+            } else if (jaInscrito) {
                 statusInscricao = 'inscrito';
             } else if (infoPreRequisito && !infoPreRequisito.atendido) {
                 statusInscricao = 'indisponivel';
             }
+
+            const vagasOcupadas = disciplina.matriculas.length;
 
             return {
                 id: disciplina.id,
