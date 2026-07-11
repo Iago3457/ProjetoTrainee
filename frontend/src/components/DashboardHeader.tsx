@@ -98,17 +98,7 @@ export default function DashboardHeader({ user, activePage = 'catalogo', onNavig
           {/* Right side */}
           <div className="flex items-center gap-2 sm:gap-3">
 
-            {/* Search — desktop only */}
-            <div className="hidden lg:flex items-center relative">
-              <div className="absolute left-3 pointer-events-none text-ui-muted">
-                <SearchIcon />
-              </div>
-              <input
-                type="text"
-                placeholder="Buscar disciplinas..."
-                className="pl-9 pr-4 py-2 w-[200px] bg-ui-bg border border-ui-border rounded-lg text-sm text-ui-dark placeholder:text-ui-muted outline-none focus:border-brand-primary transition-colors"
-              />
-            </div>
+
 
             {/* Bell */}
             <button className="hidden sm:flex items-center justify-center w-9 h-9 rounded-lg text-ui-muted hover:bg-ui-bg hover:text-ui-dark transition-colors">
