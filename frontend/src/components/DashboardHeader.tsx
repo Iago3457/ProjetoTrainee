@@ -39,7 +39,7 @@ export default function DashboardHeader({ user, activePage = 'catalogo', onNavig
   const navLinks: NavLink[] = [
     { label: 'Catálogo', pageId: 'catalogo', targetPage: 'dashboard', icon: <CatalogIcon /> },
     { label: 'Minhas Matérias', pageId: 'minhas-materias', targetPage: 'minhas-materias', icon: <BookOpenIcon /> },
-    { label: 'Perfil', pageId: 'perfil', targetPage: 'dashboard', icon: <UserIcon /> },
+    { label: 'Perfil', pageId: 'perfil', targetPage: 'perfil', icon: <UserIcon /> },
   ]
 
   const handleNav = (link: NavLink) => {
@@ -114,11 +114,15 @@ export default function DashboardHeader({ user, activePage = 'catalogo', onNavig
             <div className="relative">
               <div 
                 onClick={() => setUserMenuOpen((v) => !v)}
-                className="w-9 h-9 rounded-full bg-brand-accent flex items-center justify-center shrink-0 ring-2 ring-brand-light cursor-pointer hover:ring-brand-primary/40 transition-all"
+                className="w-9 h-9 rounded-full bg-brand-accent flex items-center justify-center shrink-0 ring-2 ring-brand-light cursor-pointer hover:ring-brand-primary/40 transition-all overflow-hidden"
               >
-                <span className="text-white text-xs font-semibold leading-none select-none">
-                  {getInitials(user.name)}
-                </span>
+                {user.avatar ? (
+                  <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-white text-xs font-semibold leading-none select-none">
+                    {getInitials(user.name)}
+                  </span>
+                )}
               </div>
               
               {userMenuOpen && (
@@ -129,6 +133,15 @@ export default function DashboardHeader({ user, activePage = 'catalogo', onNavig
                       <p className="text-sm font-semibold text-ui-dark truncate">{user.name}</p>
                       <p className="text-xs text-ui-muted truncate">{user.email}</p>
                     </div>
+                    <button 
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        if (onNavigate) onNavigate('perfil');
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-ui-dark hover:bg-ui-bg transition-colors"
+                    >
+                      Meu Perfil
+                    </button>
                     <button 
                       onClick={() => {
                         setUserMenuOpen(false);
