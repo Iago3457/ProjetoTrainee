@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import DashboardPage from './pages/DashboardPage'
@@ -9,7 +9,15 @@ import { Page } from './types'
 import { Toaster } from 'react-hot-toast'
 
 export default function App() {
-  const [page, setPage] = useState<Page>('login')
+  const [page, setPage] = useState<Page>(
+    localStorage.getItem('access_token') ? 'dashboard' : 'login'
+  )
+
+  useEffect(() => {
+    const handleUnauthorized = () => setPage('login');
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
+  }, []);
 
   const renderPage = () => {
     if (page === 'signup') return <SignupPage onNavigate={setPage} />
