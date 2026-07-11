@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { toast } from 'react-hot-toast';
 import { disciplinasService, DisciplinaDetalhes } from '../services/disciplinas.service';
 import { matriculasService } from '../services/matriculas.service';
 import { XIcon, ClockIcon, CreditBookIcon, UserTeacherIcon, CheckCircleIcon, XCircleIcon } from '../assets/icons';
@@ -58,11 +59,11 @@ export default function DisciplinaDetailModal({ disciplinaId, onClose, onInscric
     try {
       setIsEnrolling(true);
       await matriculasService.inscrever(detalhes.id);
-      alert('Inscrição realizada com sucesso!');
+      toast.success('Inscrição realizada com sucesso!');
       if (onInscricaoSuccess) onInscricaoSuccess();
       onClose();
     } catch (error: any) {
-      alert(error.response?.data?.message || 'Erro ao realizar inscrição');
+      toast.error(error.response?.data?.message || 'Erro ao realizar inscrição');
     } finally {
       setIsEnrolling(false);
     }
