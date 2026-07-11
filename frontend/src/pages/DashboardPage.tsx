@@ -26,6 +26,8 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
   const [enrolling, setEnrollingId] = useState<string | null>(null);
+  const [showConcluidas, setShowConcluidas] = useState(false);
+  const [showIndisponiveis, setShowIndisponiveis] = useState(false);
   const [selectedDisciplinaId, setSelectedDisciplinaId] = useState<string | null>(null);
 
   const carregarDados = async () => {
@@ -96,6 +98,9 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   ]
 
   const filteredDisciplinas = disciplinas.filter((d) => {
+    if (!showConcluidas && d.statusInscricao === 'concluido') return false;
+    if (!showIndisponiveis && d.statusInscricao === 'indisponivel') return false;
+
     const matchesSearch = d.nome.toLowerCase().includes(search.toLowerCase()) ||
                           d.codigo.toLowerCase().includes(search.toLowerCase());
     return matchesSearch;
@@ -156,10 +161,32 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
             ))}
           </div>
 
-          <SearchBar 
-            search={search} 
-            setSearch={setSearch}
-          />
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="flex flex-col gap-1 text-sm text-ui-medium font-medium mt-2 sm:mt-0">
+              <label className="flex items-center gap-2 cursor-pointer hover:text-ui-dark transition-colors">
+                <input 
+                  type="checkbox" 
+                  checked={showConcluidas} 
+                  onChange={(e) => setShowConcluidas(e.target.checked)} 
+                  className="w-4 h-4 rounded border-ui-border text-brand-primary focus:ring-brand-primary"
+                />
+                Mostrar matérias concluídas
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer hover:text-ui-dark transition-colors">
+                <input 
+                  type="checkbox" 
+                  checked={showIndisponiveis} 
+                  onChange={(e) => setShowIndisponiveis(e.target.checked)} 
+                  className="w-4 h-4 rounded border-ui-border text-brand-primary focus:ring-brand-primary"
+                />
+                Mostrar matérias indisponíveis
+              </label>
+            </div>
+            <SearchBar 
+              search={search} 
+              setSearch={setSearch}
+            />
+          </div>
         </div>
 
         {filteredDisciplinas.length === 0 ? (

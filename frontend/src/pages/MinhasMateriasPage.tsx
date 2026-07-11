@@ -22,6 +22,8 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
   const [erro, setErro] = useState('');
   const [cancelingId, setCancelingId] = useState<string | null>(null);
   const [selectedDisciplinaId, setSelectedDisciplinaId] = useState<string | null>(null);
+  const [filtroAno, setFiltroAno] = useState<number>(new Date().getFullYear());
+  const [filtroSemestre, setFiltroSemestre] = useState<number>(1);
 
   const loadData = async () => {
     try {
@@ -29,7 +31,7 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
       setErro('');
 
       const perfil = await disciplinasService.getPerfil();
-      const dados = await matriculasService.listarMinhas();
+      const dados = await matriculasService.listarMinhas(filtroAno, filtroSemestre);
 
       const mappedUser: User = {
         id: perfil.id,
@@ -61,7 +63,7 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [filtroAno, filtroSemestre]);
 
   const handleCancelar = async (matriculaId: string) => {
     const confirmacao = window.confirm('Tem certeza que deseja cancelar esta inscrição?');
@@ -115,7 +117,27 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 sm:gap-6">
-          <MinhasMateriasHeading semestre={user?.semestre || '2026.1'} />
+          <div className="flex flex-col gap-2">
+            <MinhasMateriasHeading semestre={user?.semestre || '2026.1'} />
+            <div className="flex gap-3">
+              <select 
+                value={filtroAno} 
+                onChange={(e) => setFiltroAno(Number(e.target.value))}
+                className="bg-white border border-ui-border text-ui-dark text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-primary cursor-pointer font-medium"
+              >
+                <option value={2025}>2025</option>
+                <option value={2026}>2026</option>
+              </select>
+              <select 
+                value={filtroSemestre} 
+                onChange={(e) => setFiltroSemestre(Number(e.target.value))}
+                className="bg-white border border-ui-border text-ui-dark text-sm rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-primary cursor-pointer font-medium"
+              >
+                <option value={1}>1º Semestre</option>
+                <option value={2}>2º Semestre</option>
+              </select>
+            </div>
+          </div>
 
           <div className="w-full md:w-auto shrink-0">
             <CreditPanel creditosAtuais={creditosAtuais} limiteCreditos={24} />
