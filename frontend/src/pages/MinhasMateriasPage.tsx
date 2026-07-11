@@ -9,6 +9,7 @@ import { disciplinasService } from '../services/disciplinas.service'
 import { matriculasService, MinhaMateria } from '../services/matriculas.service'
 import { User, Page } from '../types'
 import DisciplinaDetailModal from '../components/DisciplinaDetailModal'
+import SearchBar from '../components/SearchBar'
 
 interface MinhasMateriasPageProps {
   onNavigate?: (page: Page) => void
@@ -24,6 +25,13 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
   const [selectedDisciplinaId, setSelectedDisciplinaId] = useState<string | null>(null);
   const [filtroAno, setFiltroAno] = useState<number>(new Date().getFullYear());
   const [filtroSemestre, setFiltroSemestre] = useState<number>(1);
+  const [search, setSearch] = useState('');
+
+  const filteredMaterias = materias.filter((m) => {
+    const matchesSearch = m.nome.toLowerCase().includes(search.toLowerCase()) ||
+                          m.codigo.toLowerCase().includes(search.toLowerCase());
+    return matchesSearch;
+  });
 
   const loadData = async () => {
     try {
@@ -144,18 +152,27 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
           </div>
         </div>
 
-        <div className="sm:hidden mt-3 text-xs text-ui-muted bg-white border border-ui-border rounded-lg p-3">
-          Você está dentro do limite recomendado de créditos.
+        <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="sm:hidden text-xs text-ui-muted bg-white border border-ui-border rounded-lg p-3">
+            Você está dentro do limite recomendado de créditos.
+          </div>
+          
+          <div className="w-full sm:w-auto ml-auto">
+            <SearchBar 
+              search={search} 
+              setSearch={setSearch}
+            />
+          </div>
         </div>
 
-        {materias.length === 0 ? (
+        {filteredMaterias.length === 0 ? (
           <div className="mt-12 text-center py-12 border-2 border-dashed border-ui-border rounded-xl">
-            <p className="text-ui-medium font-medium">Você ainda não está inscrito em nenhuma disciplina.</p>
-            <p className="text-ui-muted text-sm mt-2">Acesse o catálogo para se inscrever.</p>
+            <p className="text-ui-medium font-medium">Você ainda não está inscrito em nenhuma disciplina ou nenhuma disciplina corresponde à busca.</p>
+            <p className="text-ui-muted text-sm mt-2">Acesse o catálogo para se inscrever ou tente outros termos de pesquisa.</p>
           </div>
         ) : (
           <div className="mt-6 sm:mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {materias.map((materia) => (
+            {filteredMaterias.map((materia) => (
               <MatriculaCard
                 key={materia.matriculaId}
                 {...materia}
