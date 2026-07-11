@@ -77,15 +77,18 @@ export class MatriculasService {
         };
     }
 
-    async listarMinhasMatriculas(alunoId: string) {
+    async listarMinhasMatriculas(alunoId: string, queryAno?: number, querySemestre?: number) {
         const anoAtual = new Date().getFullYear();
         const semestreAtual = 1;
+
+        const ano = queryAno || anoAtual;
+        const semestre = querySemestre || semestreAtual;
 
         const matriculas = await this.prisma.matricula.findMany({
             where: {
                 alunoId,
-                ano: anoAtual,
-                semestre: semestreAtual,
+                ano,
+                semestre,
             },
             include: {
                 disciplina: true,

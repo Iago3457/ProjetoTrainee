@@ -1,8 +1,8 @@
-import { Controller, Post, Get, Delete, Param, UseGuards, Request} from '@nestjs/common';
+import { Controller, Post, Get, Delete, Param, UseGuards, Request, Query } from '@nestjs/common';
 import { MatriculasService } from './matriculas.service';
 import { AuthGuard } from '../auth/auth.guard';
 
-import { ApiTags, ApiOperation, ApiParam, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiParam, ApiBearerAuth, ApiResponse, ApiQuery } from '@nestjs/swagger';
 
 @ApiTags('Matrículas')
 @ApiBearerAuth()
@@ -15,9 +15,19 @@ export class MatriculasController {
     @ApiOperation({ summary: 'Listar matérias inscritas do aluno logado' })
     @ApiResponse({ status: 200, description: 'Lista de matrículas retornada com sucesso.' })
     @ApiResponse({ status: 401, description: 'Não autorizado.' })
-    async listarMinhas(@Request() req) {
+    @ApiQuery({ name: 'ano', required: false, type: Number, description: 'Ano do semestre (ex: 2026)' })
+    @ApiQuery({ name: 'semestre', required: false, type: Number, description: 'Semestre (1 ou 2)' })
+    async listarMinhas(
+        @Request() req,
+        @Query('ano') ano?: string,
+        @Query('semestre') semestre?: string
+    ) {
         const alunoId = req.user.sub;
-        return this.matriculasService.listarMinhasMatriculas(alunoId);
+        return this.matriculasService.listarMinhasMatriculas(
+            alunoId,
+            ano ? parseInt(ano) : undefined,
+            semestre ? parseInt(semestre) : undefined
+        );
     }
 
     @UseGuards(AuthGuard)
