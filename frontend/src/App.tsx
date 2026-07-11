@@ -3,6 +3,7 @@ import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import DashboardPage from './pages/DashboardPage'
 import MinhasMateriasPage from './pages/MinhasMateriasPage'
+import PerfilPage from './pages/PerfilPage'
 import { Page } from './types'
 
 import { Toaster } from 'react-hot-toast'
@@ -13,6 +14,7 @@ export default function App() {
   const renderPage = () => {
     if (page === 'signup') return <SignupPage onNavigate={setPage} />
     if (page === 'minhas-materias') return <MinhasMateriasPage onNavigate={setPage} />
+    if (page === 'perfil') return <PerfilPage onNavigate={setPage} />
     if (page === 'dashboard') return <DashboardPage onNavigate={setPage} />
     return <LoginPage onNavigate={setPage} />
   }

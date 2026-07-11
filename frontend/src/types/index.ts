@@ -1,4 +1,4 @@
-export type Page = 'login' | 'signup' | 'dashboard' | 'minhas-materias'
+export type Page = 'login' | 'signup' | 'dashboard' | 'minhas-materias' | 'perfil'
 
 export interface User {
   id: string | number
