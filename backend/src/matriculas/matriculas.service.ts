@@ -1,5 +1,6 @@
 import { Injectable, BadRequestException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { checkTimeConflict } from '../utils/horario.util';
 
 @Injectable()
 export class MatriculasService {
@@ -40,7 +41,7 @@ export class MatriculasService {
         }
 
         const conflitoHorario = matriculasAtuais.find(
-            m => m.disciplina.horario === disciplinaAlvo.horario
+            m => checkTimeConflict(m.disciplina.horario, disciplinaAlvo.horario)
         );
         if (conflitoHorario) {
             throw new ConflictException(`Conflito de horário com a disciplina: ${conflitoHorario.disciplina.nome}`);
