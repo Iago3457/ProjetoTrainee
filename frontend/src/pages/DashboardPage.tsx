@@ -98,8 +98,8 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   ]
 
   const filteredDisciplinas = disciplinas.filter((d) => {
-    if (!showConcluidas && d.status === 'concluido') return false;
-    if (!showIndisponiveis && d.status === 'indisponivel') return false;
+    if (!showConcluidas && d.statusInscricao === 'concluido') return false;
+    if (!showIndisponiveis && d.statusInscricao === 'indisponivel') return false;
 
     const matchesSearch = d.nome.toLowerCase().includes(search.toLowerCase()) ||
                           d.codigo.toLowerCase().includes(search.toLowerCase());
