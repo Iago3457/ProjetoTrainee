@@ -83,6 +83,8 @@ export class DisciplinasService {
                 limiteCreditosAtingido: limiteCreditosAtingido,
                 infoPreRequisito: infoPreRequisito,
                 statusInscricao: statusInscricao,
+                departamento: disciplina.departamento,
+                periodoIdeal: disciplina.periodoIdeal,
             };
         });
 

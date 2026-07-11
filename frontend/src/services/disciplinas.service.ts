@@ -36,6 +36,8 @@ export interface DisciplinaDetalhes {
     horario: string;
     preRequisitos: PreRequisitoDetalhe[];
     statusAluno: string | null;
+    departamento: string | null;
+    periodoIdeal: number | null;
 }
 
 export const disciplinasService = {
@@ -57,6 +59,8 @@ export const disciplinasService = {
             statusInscricao: d.statusInscricao,
             preRequisito: d.infoPreRequisito || undefined,
             limiteCreditosAtingido: d.limiteCreditosAtingido,
+            departamento: d.departamento,
+            periodoIdeal: d.periodoIdeal,
         }));
 
         return {
