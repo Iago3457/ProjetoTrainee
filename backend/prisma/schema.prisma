@@ -37,6 +37,8 @@ model Disciplina {
   creditos Int
   vagas Int
   horario String //tabela de horários?
+  departamento String?
+  periodoIdeal Int?
   
   preRequisitoId String?
   preRequisito Disciplina? @relation("PreRequisito", fields: [preRequisitoId], references: [id])

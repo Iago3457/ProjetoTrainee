@@ -1,7 +1,7 @@
 import DashboardHeader from '../components/DashboardHeader'
 import CatalogHeading from '../components/CatalogHeading'
 import CreditPanel from '../components/CreditPanel'
-import FilterPill from '../components/FilterPill'
+import FilterDropdown from '../components/FilterDropdown'
 import { useState, useEffect } from 'react'
 import SearchBar from '../components/SearchBar'
 import DisciplinaCard from '../components/DisciplinaCard'
@@ -19,7 +19,8 @@ interface DashboardPageProps {
 
 export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const [search, setSearch] = useState('');
-  const [activeFilter, setActiveFilter] = useState('periodo');
+  const [filtroPeriodo, setFiltroPeriodo] = useState<string | null>(null);
+  const [filtroDepartamento, setFiltroDepartamento] = useState<string | null>('todos');
   const [user, setUser] = useState<User | null>(null);
   const [disciplinas, setDisciplinas] = useState<DisciplinaCardProps[]>([]);
   const [creditosAtuais, setCreditosAtuais] = useState(0);
@@ -92,14 +93,41 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
     }
   }
 
-  const filters = [
-    { id: 'todos', label: 'Todos os Departamentos', icon: <FilterIcon /> },
-    { id: 'periodo', label: `Período Ideal: ${user?.periodo || '4º Semestre'}` },
-  ]
+  const defaultPeriodLabel = 'Todos os Períodos';
+  const defaultPeriodNumber = parseInt(user?.semestre || '1');
+
+  const periodOptions = [
+    { id: 'todos', label: 'Todos os Períodos' },
+    { id: '1', label: '1º Semestre' },
+    { id: '2', label: '2º Semestre' },
+    { id: '3', label: '3º Semestre' },
+    { id: '4', label: '4º Semestre' },
+    { id: '5', label: '5º Semestre' },
+    { id: '6', label: '6º Semestre' },
+    { id: '7', label: '7º Semestre' },
+    { id: '8', label: '8º Semestre' },
+  ];
+
+  const deptOptions = [
+    { id: 'todos', label: 'Todos os Departamentos' },
+    { id: 'DC', label: 'Departamento DC' },
+    { id: 'DM', label: 'Departamento DM' },
+    { id: 'DEs', label: 'Departamento DEs' },
+  ];
 
   const filteredDisciplinas = disciplinas.filter((d) => {
     if (!showConcluidas && d.statusInscricao === 'concluido') return false;
     if (!showIndisponiveis && d.statusInscricao === 'indisponivel') return false;
+
+    // Filter by period
+    if (filtroPeriodo && filtroPeriodo !== 'todos') {
+      if (d.periodoIdeal !== parseInt(filtroPeriodo)) return false;
+    }
+
+    // Filter by department
+    if (filtroDepartamento && filtroDepartamento !== 'todos') {
+      if (d.departamento !== filtroDepartamento) return false;
+    }
 
     const matchesSearch = d.nome.toLowerCase().includes(search.toLowerCase()) ||
                           d.codigo.toLowerCase().includes(search.toLowerCase());
@@ -150,15 +178,22 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
 
         <div className="mt-6 sm:mt-8 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible sm:flex-wrap">
-            {filters.map((filter) => (
-              <FilterPill 
-                key={filter.id} 
-                label={filter.label} 
-                isActive={activeFilter === filter.id} 
-                onClick={() => setActiveFilter(filter.id)}
-                icon={filter.icon}
-              />
-            ))}
+            <FilterDropdown
+              label={defaultPeriodLabel}
+              options={periodOptions}
+              activeOptionId={filtroPeriodo}
+              onSelect={(id) => setFiltroPeriodo(id)}
+              isActive={filtroPeriodo !== 'todos'}
+            />
+            
+            <FilterDropdown
+              label="Todos os Departamentos"
+              icon={<FilterIcon />}
+              options={deptOptions}
+              activeOptionId={filtroDepartamento}
+              onSelect={(id) => setFiltroDepartamento(id)}
+              isActive={filtroDepartamento !== 'todos' && filtroDepartamento !== null}
+            />
           </div>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">

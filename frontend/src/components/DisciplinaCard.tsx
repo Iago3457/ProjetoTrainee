@@ -1,6 +1,6 @@
 import Badge from './Badge';
 import EnrollButton from './EnrollButton';
-import { ClockIcon, CreditBookIcon, CheckCircleIcon, XCircleIcon, InfoCircleIcon } from '../assets/icons';
+import { ClockIcon, CreditBookIcon, CheckCircleIcon, XCircleIcon, InfoCircleIcon, CalendarIcon, BuildingIcon } from '../assets/icons';
 
 export interface DisciplinaCardProps {
   id: string;
@@ -16,11 +16,13 @@ export interface DisciplinaCardProps {
   onInscrever?: () => void;
   isEnrolling?: boolean;
   onVerDetalhes?: () => void;
+  departamento?: string | null;
+  periodoIdeal?: number | null;
 }
 
 export default function DisciplinaCard({
   codigo, nome, vagasOcupadas, vagasTotais, periodo, creditos,
-  statusInscricao, preRequisito, limiteCreditosAtingido, onInscrever, isEnrolling, onVerDetalhes
+  statusInscricao, preRequisito, limiteCreditosAtingido, onInscrever, isEnrolling, onVerDetalhes, departamento, periodoIdeal
 }: DisciplinaCardProps) {
   
   const isBloqueado = (preRequisito && !preRequisito.atendido) || (statusInscricao === 'indisponivel');
@@ -63,6 +65,18 @@ export default function DisciplinaCard({
           <CreditBookIcon className="text-ui-muted" />
           {creditos} Créditos
         </span>
+        {periodoIdeal && (
+          <span className="flex items-center gap-1 text-brand-primary">
+            <CalendarIcon className="text-brand-primary" />
+            {periodoIdeal}º Semestre
+          </span>
+        )}
+        {departamento && (
+          <span className="flex items-center gap-1 text-ui-muted">
+            <BuildingIcon className="text-ui-muted" />
+            {departamento}
+          </span>
+        )}
       </div>
 
       {/* Linha 4: Badges de Validação */}

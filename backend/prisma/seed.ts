@@ -35,6 +35,8 @@ async function main() {
             creditos: 6,
             vagas: 40,
             horario: 'Segunda, Quarta e Sexta. 08h-10h',
+            departamento: 'DM',
+            periodoIdeal: 1,
         },
     });
 
@@ -47,6 +49,8 @@ async function main() {
             creditos: 4,
             vagas: 40,
             horario: 'Terça e Quinta. 08h-10h',
+            departamento: 'DC',
+            periodoIdeal: 1,
         },
     });
 
@@ -59,6 +63,8 @@ async function main() {
             creditos: 2,
             vagas: 40,
             horario: 'Sexta. 10h-12h',
+            departamento: 'DC',
+            periodoIdeal: 1,
         },
     });
 
@@ -71,6 +77,8 @@ async function main() {
             creditos: 8,
             vagas: 40,
             horario: 'Segunda e Quarta. 14h-18h',
+            departamento: 'DC',
+            periodoIdeal: 1,
         },
     });
 
@@ -83,6 +91,8 @@ async function main() {
             creditos: 6,
             vagas: 40,
             horario: 'Terça e Quinta. 14h-17h',
+            departamento: 'DC',
+            periodoIdeal: 1,
         },
     });
 
@@ -100,6 +110,8 @@ async function main() {
             creditos: 4,
             vagas: 40,
             horario: 'Segunda e Quarta. 08h-10h',
+            departamento: 'DM',
+            periodoIdeal: 2,
         },
     });
 
@@ -112,6 +124,8 @@ async function main() {
             creditos: 4,
             vagas: 40,
             horario: 'Terça e Quinta. 08h-10h',
+            departamento: 'DEs',
+            periodoIdeal: 2,
         },
     });
 
@@ -124,6 +138,8 @@ async function main() {
             creditos: 4,
             vagas: 40,
             horario: 'Sexta. 08h-12h',
+            departamento: 'DC',
+            periodoIdeal: 2,
         },
     });
 
@@ -137,6 +153,8 @@ async function main() {
             vagas: 40,
             horario: 'Segunda e Quarta. 14h-16h',
             preRequisitoId: cap.id,
+            departamento: 'DC',
+            periodoIdeal: 2,
         },
     });
 
@@ -150,6 +168,8 @@ async function main() {
             vagas: 40,
             horario: 'Terça e Quinta. 14h-16h',
             preRequisitoId: cap.id,
+            departamento: 'DC',
+            periodoIdeal: 2,
         },
     });
 
@@ -163,6 +183,8 @@ async function main() {
             vagas: 40,
             horario: 'Terça e Quinta. 16h-19h',
             preRequisitoId: logDigital.id,
+            departamento: 'DC',
+            periodoIdeal: 2,
         },
     });
 
@@ -181,6 +203,8 @@ async function main() {
             vagas: 40,
             horario: 'Segunda e Quarta. 08h-10h',
             preRequisitoId: calc1.id,
+            departamento: 'DM',
+            periodoIdeal: 3,
         },
     });
 
@@ -194,6 +218,8 @@ async function main() {
             vagas: 40,
             horario: 'Terça e Quinta. 08h-10h',
             preRequisitoId: aed1.id,
+            departamento: 'DC',
+            periodoIdeal: 3,
         },
     });
 
@@ -207,6 +233,8 @@ async function main() {
             vagas: 40,
             horario: 'Segunda e Quarta. 14h-16h',
             preRequisitoId: aed1.id,
+            departamento: 'DC',
+            periodoIdeal: 3,
         },
     });
 
@@ -220,6 +248,8 @@ async function main() {
             vagas: 40,
             horario: 'Terça e Quinta. 14h-17h',
             preRequisitoId: arqOrg1.id,
+            departamento: 'DC',
+            periodoIdeal: 3,
         },
     });
 
@@ -232,6 +262,8 @@ async function main() {
             creditos: 4,
             vagas: 40,
             horario: 'Sexta. 08h-12h',
+            departamento: 'DC',
+            periodoIdeal: 3,
         },
     });
 
@@ -244,6 +276,8 @@ async function main() {
             creditos: 4,
             vagas: 40,
             horario: 'Sexta. 14h-18h',
+            departamento: 'DC',
+            periodoIdeal: 3,
         },
     });
 
@@ -262,6 +296,8 @@ async function main() {
             vagas: 40,
             horario: 'Segunda e Quarta. 08h-10h',
             preRequisitoId: geomAnalitica.id,
+            departamento: 'DM',
+            periodoIdeal: 4,
         },
     });
 
@@ -275,6 +311,8 @@ async function main() {
             vagas: 40,
             horario: 'Terça e Quinta. 08h-10h',
             preRequisitoId: aed2.id,
+            departamento: 'DC',
+            periodoIdeal: 4,
         },
     });
 
@@ -288,6 +326,8 @@ async function main() {
             vagas: 40,
             horario: 'Segunda e Quarta. 10h-12h',
             preRequisitoId: cap.id,
+            departamento: 'DC',
+            periodoIdeal: 4,
         },
     });
 
@@ -301,6 +341,8 @@ async function main() {
             vagas: 40,
             horario: 'Terça e Quinta. 14h-16h',
             preRequisitoId: poo.id,
+            departamento: 'DC',
+            periodoIdeal: 4,
         },
     });
 
@@ -314,6 +356,8 @@ async function main() {
             vagas: 40,
             horario: 'Segunda e Quarta. 14h-16h',
             preRequisitoId: aed1.id,
+            departamento: 'DC',
+            periodoIdeal: 4,
         },
     });
 
@@ -327,6 +371,8 @@ async function main() {
             vagas: 40,
             horario: 'Terça e Quinta. 16h-18h',
             preRequisitoId: aed1.id,
+            departamento: 'DC',
+            periodoIdeal: 4,
         },
     });
 

@@ -257,3 +257,29 @@ export function UserTeacherIcon({ className }: { className?: string }) {
     </svg>
   )
 }
+
+export function ChevronDownIcon({ className }: { className?: string }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" className={className} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  )
+}
+
+export function BuildingIcon({ className }: { className?: string }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" className={className}>
+      <rect x="4" y="2" width="16" height="20" rx="2" ry="2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9 22v-4h6v4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M8 6h.01" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M16 6h.01" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M12 6h.01" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M12 10h.01" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M12 14h.01" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M16 10h.01" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M16 14h.01" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M8 10h.01" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M8 14h.01" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
