@@ -74,5 +74,10 @@ export const disciplinasService = {
     getPerfil: async (): Promise<UserProfile> => {
         const response = await api.get('/auth/me');
         return response.data;
+    },
+
+    atualizarAvatar: async (avatarUrl: string): Promise<{ mensagem: string, avatarUrl: string }> => {
+        const response = await api.patch('/aluno/avatar', { avatarUrl });
+        return response.data;
     }
 };
