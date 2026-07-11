@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { GraduationCapIcon, EyeOffIcon } from '../assets/icons'
 import InputField from './InputField'
 import { Page } from '../types'
+import { toast } from 'react-hot-toast'
 
 interface SignupCardProps {
   onNavigate?: (page: Page) => void
@@ -48,7 +49,7 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
         throw new Error(mensagensBackend.join('\n'))
       }
       
-      alert('Cadastro realizado com sucesso! Faça login para continuar.')
+      toast.success('Cadastro realizado com sucesso! Faça login para continuar.')
       onNavigate?.('login')
     } catch (error: any) {
       setErro(error.message || 'Ocorreu um erro durante o cadastro')

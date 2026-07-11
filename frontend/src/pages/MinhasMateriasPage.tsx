@@ -4,6 +4,7 @@ import CreditPanel from '../components/CreditPanel'
 import MatriculaCard from '../components/MatriculaCard'
 import { PrinterIcon } from '../assets/icons'
 import { useState, useEffect } from 'react'
+import { toast } from 'react-hot-toast'
 import { disciplinasService } from '../services/disciplinas.service'
 import { matriculasService, MinhaMateria } from '../services/matriculas.service'
 import { User, Page } from '../types'
@@ -69,11 +70,11 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
     try {
       setCancelingId(matriculaId);
       await matriculasService.cancelarInscricao(matriculaId);
-      alert('Inscrição cancelada com sucesso!');
+      toast.success('Inscrição cancelada com sucesso!');
       await loadData();
     } catch (error: any) {
       const mensagemErro = error.response?.data?.message || 'Erro ao cancelar inscrição';
-      alert(mensagemErro);
+      toast.error(mensagemErro);
     } finally {
       setCancelingId(null);
     }

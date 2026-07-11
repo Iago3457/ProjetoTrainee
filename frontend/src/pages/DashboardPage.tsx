@@ -11,6 +11,7 @@ import { User, Page } from '../types'
 import { DisciplinaCardProps } from '../components/DisciplinaCard'
 import { matriculasService } from '../services/matriculas.service'
 import DisciplinaDetailModal from '../components/DisciplinaDetailModal'
+import { toast } from 'react-hot-toast'
 
 interface DashboardPageProps {
   onNavigate?: (page: Page) => void
@@ -79,11 +80,11 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
     try {
       setEnrollingId(disciplinaId);
       await matriculasService.inscrever(disciplinaId);
-      alert('Inscrição realizada com sucesso');
+      toast.success('Inscrição realizada com sucesso');
       await refreshCatalogo();
     } catch (error: any) {
       const mensagemErro = error.response?.data?.message || 'Erro ao inscrever-se na disciplina';
-      alert(mensagemErro);
+      toast.error(mensagemErro);
     } finally {
       setEnrollingId(null);
     }
