@@ -22,8 +22,18 @@ export const matriculasService = {
         return response.data;
     },
 
-    listarMinhas: async (): Promise<MinhasMateriasResponse> => {
-        const response = await api.get('/matriculas/minhas');
+    listarMinhas: async (ano?: number, semestre?: number): Promise<MinhasMateriasResponse> => {
+        let url = '/matriculas/minhas';
+        const params = new URLSearchParams();
+        if (ano) params.append('ano', ano.toString());
+        if (semestre) params.append('semestre', semestre.toString());
+        
+        const queryString = params.toString();
+        if (queryString) {
+            url += `?${queryString}`;
+        }
+        
+        const response = await api.get(url);
         return response.data;
     },
 
