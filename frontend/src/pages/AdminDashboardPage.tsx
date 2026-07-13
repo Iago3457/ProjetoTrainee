@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Page } from '../types'
-import { adminService, AdminDisciplina } from '../services/admin.service'
-import { GraduationCapIcon, SearchIcon, PlusIcon, EditIcon, TrashIcon, LogOutIcon } from '../assets/icons'
+import { adminService, AdminDisciplina, MatriculaPendente } from '../services/admin.service'
+import { GraduationCapIcon, SearchIcon, PlusIcon, EditIcon, TrashIcon, LogOutIcon, CheckCircleIcon, XCircleIcon } from '../assets/icons'
 import AdminDisciplinaModal from '../components/AdminDisciplinaModal'
 import { toast } from 'react-hot-toast'
 
@@ -10,7 +10,9 @@ interface AdminDashboardPageProps {
 }
 
 export default function AdminDashboardPage({ onNavigate }: AdminDashboardPageProps) {
+  const [activeTab, setActiveTab] = useState<'catalogo' | 'aprovacoes'>('catalogo')
   const [disciplinas, setDisciplinas] = useState<AdminDisciplina[]>([])
+  const [pendentes, setPendentes] = useState<MatriculaPendente[]>([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
   
@@ -20,8 +22,12 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
   const carregarDados = async () => {
     try {
       setLoading(true)
-      const data = await adminService.listarDisciplinas()
-      setDisciplinas(data)
+      const [dataDisciplinas, dataPendentes] = await Promise.all([
+        adminService.listarDisciplinas(),
+        adminService.listarPendentes()
+      ])
+      setDisciplinas(dataDisciplinas)
+      setPendentes(dataPendentes)
     } catch (error: any) {
       toast.error('Erro ao carregar dados do painel.')
     } finally {
@@ -73,9 +79,37 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
     }
   }
 
+  const handleAprovar = async (id: string) => {
+    try {
+      await adminService.aprovarMatricula(id)
+      toast.success('Matrícula aprovada!')
+      carregarDados()
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Erro ao aprovar')
+    }
+  }
+
+  const handleRejeitar = async (id: string) => {
+    if (window.confirm('Tem certeza que deseja rejeitar essa matrícula?')) {
+      try {
+        await adminService.rejeitarMatricula(id)
+        toast.success('Matrícula rejeitada!')
+        carregarDados()
+      } catch (error: any) {
+        toast.error(error.response?.data?.message || 'Erro ao rejeitar')
+      }
+    }
+  }
+
   const filteredDisciplinas = disciplinas.filter(d => 
     d.nome.toLowerCase().includes(search.toLowerCase()) || 
     d.codigo.toLowerCase().includes(search.toLowerCase())
+  )
+
+  const filteredPendentes = pendentes.filter(p => 
+    p.aluno.nome.toLowerCase().includes(search.toLowerCase()) || 
+    p.aluno.ra.includes(search) ||
+    p.disciplina.codigo.toLowerCase().includes(search.toLowerCase())
   )
 
   return (
@@ -103,6 +137,35 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
               <span className="hidden sm:inline">Sair</span>
             </button>
           </div>
+          
+          {/* Tabs */}
+          <div className="flex items-center gap-6 mt-4">
+            <button 
+              onClick={() => setActiveTab('catalogo')}
+              className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'catalogo' 
+                  ? 'border-brand-primary text-white' 
+                  : 'border-transparent text-[#9794A8] hover:text-[#B0ADC0]'
+              }`}
+            >
+              Catálogo de Disciplinas
+            </button>
+            <button 
+              onClick={() => setActiveTab('aprovacoes')}
+              className={`pb-3 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+                activeTab === 'aprovacoes' 
+                  ? 'border-brand-primary text-white' 
+                  : 'border-transparent text-[#9794A8] hover:text-[#B0ADC0]'
+              }`}
+            >
+              Aprovações Pendentes
+              {pendentes.length > 0 && (
+                <span className="bg-brand-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                  {pendentes.length}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -110,14 +173,18 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <h2 className="text-xl font-bold text-white">Disciplinas do Catálogo</h2>
-          <button 
-            onClick={handleNovaDisciplina}
-            className="flex items-center gap-2 bg-brand-primary hover:bg-indigo-500 text-white font-medium text-sm px-4 py-2 rounded-lg transition-colors"
-          >
-            <PlusIcon className="w-4 h-4" />
-            Nova Disciplina
-          </button>
+          <h2 className="text-xl font-bold text-white">
+            {activeTab === 'catalogo' ? 'Disciplinas do Catálogo' : 'Aprovações Pendentes'}
+          </h2>
+          {activeTab === 'catalogo' && (
+            <button 
+              onClick={handleNovaDisciplina}
+              className="flex items-center gap-2 bg-brand-primary hover:bg-indigo-500 text-white font-medium text-sm px-4 py-2 rounded-lg transition-colors"
+            >
+              <PlusIcon className="w-4 h-4" />
+              Nova Disciplina
+            </button>
+          )}
         </div>
 
         {/* Toolbar */}
@@ -126,22 +193,25 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555367] w-4 h-4" />
             <input 
               type="text" 
-              placeholder="Buscar por código ou nome..."
+              placeholder={activeTab === 'catalogo' ? "Buscar por código ou nome..." : "Buscar por aluno, RA ou disciplina..."}
               value={search}
               onChange={e => setSearch(e.target.value)}
               className="w-full bg-[#12111E] border border-[#2A2940] text-sm text-white rounded-lg pl-9 pr-4 py-2 focus:border-brand-primary/50 outline-none transition-colors"
             />
           </div>
           <div className="text-sm text-[#9794A8]">
-            {filteredDisciplinas.length} disciplinas
+            {activeTab === 'catalogo' 
+              ? `${filteredDisciplinas.length} disciplinas`
+              : `${filteredPendentes.length} requisições`
+            }
           </div>
         </div>
 
-        {/* Table */}
+        {/* Content Area */}
         <div className="bg-[#1A1929] border-x border-b border-[#2A2940] rounded-b-xl overflow-x-auto">
           {loading ? (
-            <div className="p-12 text-center text-[#9794A8]">Carregando disciplinas...</div>
-          ) : (
+            <div className="p-12 text-center text-[#9794A8]">Carregando dados...</div>
+          ) : activeTab === 'catalogo' ? (
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-[#2A2940] text-xs uppercase tracking-wider text-[#9794A8] bg-[#12111E]/50">
@@ -212,6 +282,67 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
                   <tr>
                     <td colSpan={5} className="px-6 py-8 text-center text-[#9794A8] text-sm">
                       Nenhuma disciplina encontrada.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          ) : (
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-[#2A2940] text-xs uppercase tracking-wider text-[#9794A8] bg-[#12111E]/50">
+                  <th className="px-6 py-4 font-medium">Aluno</th>
+                  <th className="px-6 py-4 font-medium">Disciplina</th>
+                  <th className="px-6 py-4 font-medium">Data</th>
+                  <th className="px-6 py-4 font-medium text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#2A2940]">
+                {filteredPendentes.map(p => {
+                  const dataFormatada = new Date(p.createdAt).toLocaleDateString('pt-BR', {
+                    day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+                  })
+                  
+                  return (
+                    <tr key={p.id} className="hover:bg-[#201F31] transition-colors">
+                      <td className="px-6 py-4">
+                        <p className="text-sm font-medium text-white">{p.aluno.nome}</p>
+                        <p className="text-xs text-[#9794A8] mt-0.5">RA: {p.aluno.ra} • {p.aluno.email}</p>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm font-semibold text-brand-primary bg-brand-primary/10 px-2 py-1 rounded">
+                          {p.disciplina.codigo}
+                        </span>
+                        <span className="text-sm text-white ml-2">{p.disciplina.nome}</span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#B0ADC0]">
+                        {dataFormatada}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button 
+                            onClick={() => handleRejeitar(p.id)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-400 hover:bg-red-500/10 rounded transition-colors border border-red-500/30"
+                          >
+                            <XCircleIcon className="w-4 h-4" />
+                            Rejeitar
+                          </button>
+                          <button 
+                            onClick={() => handleAprovar(p.id)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-emerald-400 hover:bg-emerald-500/10 rounded transition-colors border border-emerald-500/30"
+                          >
+                            <CheckCircleIcon className="w-4 h-4" />
+                            Aprovar
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
+                {filteredPendentes.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="px-6 py-8 text-center text-[#9794A8] text-sm">
+                      Nenhuma requisição pendente.
                     </td>
                   </tr>
                 )}
