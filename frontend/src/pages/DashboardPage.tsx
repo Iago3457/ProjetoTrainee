@@ -94,7 +94,6 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   }
 
   const defaultPeriodLabel = 'Todos os Períodos';
-  const defaultPeriodNumber = parseInt(user?.semestre || '1');
 
   const periodOptions = [
     { id: 'todos', label: 'Todos os Períodos' },
