@@ -4,6 +4,8 @@ import SignupPage from './pages/SignupPage'
 import DashboardPage from './pages/DashboardPage'
 import MinhasMateriasPage from './pages/MinhasMateriasPage'
 import PerfilPage from './pages/PerfilPage'
+import AdminLoginPage from './pages/AdminLoginPage'
+import AdminDashboardPage from './pages/AdminDashboardPage'
 import { Page } from './types'
 
 import { Toaster } from 'react-hot-toast'
@@ -24,6 +26,8 @@ export default function App() {
     if (page === 'minhas-materias') return <MinhasMateriasPage onNavigate={setPage} />
     if (page === 'perfil') return <PerfilPage onNavigate={setPage} />
     if (page === 'dashboard') return <DashboardPage onNavigate={setPage} />
+    if (page === 'admin-login') return <AdminLoginPage onNavigate={setPage} />
+    if (page === 'admin-dashboard') return <AdminDashboardPage onNavigate={setPage} />
     return <LoginPage onNavigate={setPage} />
   }
 
