@@ -99,4 +99,27 @@ export class AuthService {
 
         return aluno;
     }
+
+    async loginAdmin(dados: LoginDto) {
+        const admin = await this.prisma.admin.findUnique({
+            where: { email: dados.email },
+        });
+
+        if (!admin) {
+            throw new UnauthorizedException('Email ou senha inválidos');
+        }
+
+        const senhaValida = await bcrypt.compare(dados.senha, admin.senha);
+
+        if (!senhaValida) {
+            throw new UnauthorizedException('Email ou senha inválidos');
+        }
+
+        const payload = { sub: admin.id, email: admin.email, role: 'admin' };
+
+        return {
+            mensagem: 'Login de administrador realizado com sucesso',
+            access_token: this.jwtService.sign(payload),
+        };
+    }
 }

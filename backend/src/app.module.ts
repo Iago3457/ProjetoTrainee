@@ -6,9 +6,10 @@ import { AlunoModule } from './aluno/aluno.module';
 import { AuthModule } from './auth/auth.module';
 import { DisciplinasModule } from './disciplinas/disciplinas.module';
 import { MatriculasModule } from './matriculas/matriculas.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
-  imports: [PrismaModule, AlunoModule, AuthModule, DisciplinasModule, MatriculasModule],
+  imports: [PrismaModule, AlunoModule, AuthModule, DisciplinasModule, MatriculasModule, AdminModule],
   controllers: [AppController],
   providers: [AppService],
 })

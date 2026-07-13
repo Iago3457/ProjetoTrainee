@@ -68,3 +68,13 @@ model Matricula {
 
   @@unique ([alunoId, disciplinaID, semestre, ano]) // Um aluno só pode se matricular uma vez em uma disciplina
 }
+
+model Admin {
+  id    String @id @default(uuid())
+  nome  String
+  email String @unique
+  senha String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

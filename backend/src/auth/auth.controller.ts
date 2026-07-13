@@ -39,4 +39,13 @@ export class AuthController {
     async getPerfil(@Request() req: any) {
         return this.authService.getPerfil(req.user.sub);
     }
+
+    @Post('admin/login')
+    @ApiOperation({ summary: 'Fazer login como administrador' })
+    @ApiBody({ type: LoginDto })
+    @ApiResponse({ status: 200, description: 'Login de admin bem-sucedido.' })
+    @UsePipes(new ZodValidationPipe(loginSchema))
+    async loginAdmin(@Body() dados: LoginDto) {
+        return this.authService.loginAdmin(dados);
+    }
 }
