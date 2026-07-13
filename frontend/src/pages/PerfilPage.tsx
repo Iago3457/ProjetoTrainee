@@ -101,7 +101,7 @@ export default function PerfilPage({ onNavigate }: PerfilPageProps) {
                   />
                 ) : (
                   <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-brand-light flex items-center justify-center border-4 border-white shadow-md text-brand-primary">
-                    <UserIcon width={48} height={48} color="currentColor" />
+                    <UserIcon className="w-12 h-12 text-current" />
                   </div>
                 )}
                 <button 
