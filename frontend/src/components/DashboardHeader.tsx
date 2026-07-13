@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { GraduationCapIcon, MenuIcon, BellIcon, HelpCircleIcon, SearchIcon, CatalogIcon, BookOpenIcon, UserIcon } from '../assets/icons'
+import { GraduationCapIcon, MenuIcon, BellIcon, HelpCircleIcon, CatalogIcon, BookOpenIcon, UserIcon } from '../assets/icons'
 import { User, Page } from '../types'
 
 interface DashboardHeaderProps {
