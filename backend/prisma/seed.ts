@@ -35,7 +35,13 @@ async function main() {
             professor: 'Prof. Dr. Ricardo Almeida',
             creditos: 6,
             vagas: 40,
-            horario: 'Segunda, Quarta e Sexta. 08h-10h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Segunda', horarioInicio: '08:00', horarioFim: '10:00' },
+                        { diaSemana: 'Quarta', horarioInicio: '08:00', horarioFim: '10:00' },
+                        { diaSemana: 'Sexta', horarioInicio: '08:00', horarioFim: '10:00' }
+                ]
+            },
             departamento: 'DM',
             periodoIdeal: 1,
         },
@@ -49,7 +55,12 @@ async function main() {
             professor: 'Prof. Dr. Carlos Eduardo Lima',
             creditos: 4,
             vagas: 40,
-            horario: 'Terça e Quinta. 08h-10h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Terça', horarioInicio: '08:00', horarioFim: '10:00' },
+                        { diaSemana: 'Quinta', horarioInicio: '08:00', horarioFim: '10:00' }
+                ]
+            },
             departamento: 'DC',
             periodoIdeal: 1,
         },
@@ -63,7 +74,11 @@ async function main() {
             professor: 'Profa. Dra. Fernanda Oliveira',
             creditos: 2,
             vagas: 40,
-            horario: 'Sexta. 10h-12h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Sexta', horarioInicio: '10:00', horarioFim: '12:00' }
+                ]
+            },
             departamento: 'DC',
             periodoIdeal: 1,
         },
@@ -77,7 +92,12 @@ async function main() {
             professor: 'Profa. Dra. Ana Paula Ferreira',
             creditos: 8,
             vagas: 40,
-            horario: 'Segunda e Quarta. 14h-18h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Segunda', horarioInicio: '14:00', horarioFim: '18:00' },
+                        { diaSemana: 'Quarta', horarioInicio: '14:00', horarioFim: '18:00' }
+                ]
+            },
             departamento: 'DC',
             periodoIdeal: 1,
         },
@@ -91,7 +111,12 @@ async function main() {
             professor: 'Prof. Dr. João Henrique Souza',
             creditos: 6,
             vagas: 40,
-            horario: 'Terça e Quinta. 14h-17h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Terça', horarioInicio: '14:00', horarioFim: '17:00' },
+                        { diaSemana: 'Quinta', horarioInicio: '14:00', horarioFim: '17:00' }
+                ]
+            },
             departamento: 'DC',
             periodoIdeal: 1,
         },
@@ -110,7 +135,12 @@ async function main() {
             professor: 'Prof. Dr. Marcos Vinícius Costa',
             creditos: 4,
             vagas: 40,
-            horario: 'Segunda e Quarta. 08h-10h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Segunda', horarioInicio: '08:00', horarioFim: '10:00' },
+                        { diaSemana: 'Quarta', horarioInicio: '08:00', horarioFim: '10:00' }
+                ]
+            },
             departamento: 'DM',
             periodoIdeal: 2,
         },
@@ -124,7 +154,12 @@ async function main() {
             professor: 'Profa. Dra. Luciana Mendes',
             creditos: 4,
             vagas: 40,
-            horario: 'Terça e Quinta. 08h-10h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Terça', horarioInicio: '08:00', horarioFim: '10:00' },
+                        { diaSemana: 'Quinta', horarioInicio: '08:00', horarioFim: '10:00' }
+                ]
+            },
             departamento: 'DEs',
             periodoIdeal: 2,
         },
@@ -138,7 +173,11 @@ async function main() {
             professor: 'Prof. Dr. Paulo Roberto Santos',
             creditos: 4,
             vagas: 40,
-            horario: 'Sexta. 08h-12h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Sexta', horarioInicio: '08:00', horarioFim: '12:00' }
+                ]
+            },
             departamento: 'DC',
             periodoIdeal: 2,
         },
@@ -152,7 +191,12 @@ async function main() {
             professor: 'Prof. Dr. André Luís Pereira',
             creditos: 4,
             vagas: 40,
-            horario: 'Segunda e Quarta. 14h-16h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Segunda', horarioInicio: '14:00', horarioFim: '16:00' },
+                        { diaSemana: 'Quarta', horarioInicio: '14:00', horarioFim: '16:00' }
+                ]
+            },
             preRequisitoId: cap.id,
             departamento: 'DC',
             periodoIdeal: 2,
@@ -167,7 +211,12 @@ async function main() {
             professor: 'Profa. Dra. Camila Rodrigues',
             creditos: 4,
             vagas: 40,
-            horario: 'Terça e Quinta. 14h-16h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Terça', horarioInicio: '14:00', horarioFim: '16:00' },
+                        { diaSemana: 'Quinta', horarioInicio: '14:00', horarioFim: '16:00' }
+                ]
+            },
             preRequisitoId: cap.id,
             departamento: 'DC',
             periodoIdeal: 2,
@@ -182,7 +231,12 @@ async function main() {
             professor: 'Prof. Dr. João Henrique Souza',
             creditos: 6,
             vagas: 40,
-            horario: 'Terça e Quinta. 16h-19h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Terça', horarioInicio: '16:00', horarioFim: '19:00' },
+                        { diaSemana: 'Quinta', horarioInicio: '16:00', horarioFim: '19:00' }
+                ]
+            },
             preRequisitoId: logDigital.id,
             departamento: 'DC',
             periodoIdeal: 2,
@@ -202,7 +256,12 @@ async function main() {
             professor: 'Prof. Dr. Ricardo Almeida',
             creditos: 4,
             vagas: 40,
-            horario: 'Segunda e Quarta. 08h-10h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Segunda', horarioInicio: '08:00', horarioFim: '10:00' },
+                        { diaSemana: 'Quarta', horarioInicio: '08:00', horarioFim: '10:00' }
+                ]
+            },
             preRequisitoId: calc1.id,
             departamento: 'DM',
             periodoIdeal: 3,
@@ -217,7 +276,12 @@ async function main() {
             professor: 'Prof. Dr. André Luís Pereira',
             creditos: 4,
             vagas: 40,
-            horario: 'Terça e Quinta. 08h-10h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Terça', horarioInicio: '08:00', horarioFim: '10:00' },
+                        { diaSemana: 'Quinta', horarioInicio: '08:00', horarioFim: '10:00' }
+                ]
+            },
             preRequisitoId: aed1.id,
             departamento: 'DC',
             periodoIdeal: 3,
@@ -232,7 +296,12 @@ async function main() {
             professor: 'Profa. Dra. Mariana Tavares',
             creditos: 4,
             vagas: 40,
-            horario: 'Segunda e Quarta. 14h-16h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Segunda', horarioInicio: '14:00', horarioFim: '16:00' },
+                        { diaSemana: 'Quarta', horarioInicio: '14:00', horarioFim: '16:00' }
+                ]
+            },
             preRequisitoId: aed1.id,
             departamento: 'DC',
             periodoIdeal: 3,
@@ -247,7 +316,12 @@ async function main() {
             professor: 'Prof. Dr. Fábio Augusto Silva',
             creditos: 6,
             vagas: 40,
-            horario: 'Terça e Quinta. 14h-17h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Terça', horarioInicio: '14:00', horarioFim: '17:00' },
+                        { diaSemana: 'Quinta', horarioInicio: '14:00', horarioFim: '17:00' }
+                ]
+            },
             preRequisitoId: arqOrg1.id,
             departamento: 'DC',
             periodoIdeal: 3,
@@ -262,7 +336,11 @@ async function main() {
             professor: 'Profa. Dra. Helena Castro',
             creditos: 4,
             vagas: 40,
-            horario: 'Sexta. 08h-12h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Sexta', horarioInicio: '08:00', horarioFim: '12:00' }
+                ]
+            },
             departamento: 'DC',
             periodoIdeal: 3,
         },
@@ -276,7 +354,11 @@ async function main() {
             professor: 'Prof. Dr. Roberto Nascimento',
             creditos: 4,
             vagas: 40,
-            horario: 'Sexta. 14h-18h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Sexta', horarioInicio: '14:00', horarioFim: '18:00' }
+                ]
+            },
             departamento: 'DC',
             periodoIdeal: 3,
         },
@@ -295,7 +377,12 @@ async function main() {
             professor: 'Prof. Dr. Marcos Vinícius Costa',
             creditos: 4,
             vagas: 40,
-            horario: 'Segunda e Quarta. 08h-10h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Segunda', horarioInicio: '08:00', horarioFim: '10:00' },
+                        { diaSemana: 'Quarta', horarioInicio: '08:00', horarioFim: '10:00' }
+                ]
+            },
             preRequisitoId: geomAnalitica.id,
             departamento: 'DM',
             periodoIdeal: 4,
@@ -310,7 +397,12 @@ async function main() {
             professor: 'Prof. Dr. André Luís Pereira',
             creditos: 4,
             vagas: 40,
-            horario: 'Terça e Quinta. 08h-10h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Terça', horarioInicio: '08:00', horarioFim: '10:00' },
+                        { diaSemana: 'Quinta', horarioInicio: '08:00', horarioFim: '10:00' }
+                ]
+            },
             preRequisitoId: aed2.id,
             departamento: 'DC',
             periodoIdeal: 4,
@@ -325,7 +417,12 @@ async function main() {
             professor: 'Profa. Dra. Camila Rodrigues',
             creditos: 4,
             vagas: 40,
-            horario: 'Segunda e Quarta. 10h-12h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Segunda', horarioInicio: '10:00', horarioFim: '12:00' },
+                        { diaSemana: 'Quarta', horarioInicio: '10:00', horarioFim: '12:00' }
+                ]
+            },
             preRequisitoId: cap.id,
             departamento: 'DC',
             periodoIdeal: 4,
@@ -340,7 +437,12 @@ async function main() {
             professor: 'Prof. Dr. Thiago Mendonça',
             creditos: 4,
             vagas: 40,
-            horario: 'Terça e Quinta. 14h-16h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Terça', horarioInicio: '14:00', horarioFim: '16:00' },
+                        { diaSemana: 'Quinta', horarioInicio: '14:00', horarioFim: '16:00' }
+                ]
+            },
             preRequisitoId: poo.id,
             departamento: 'DC',
             periodoIdeal: 4,
@@ -355,7 +457,12 @@ async function main() {
             professor: 'Profa. Dra. Mariana Tavares',
             creditos: 4,
             vagas: 40,
-            horario: 'Segunda e Quarta. 14h-16h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Segunda', horarioInicio: '14:00', horarioFim: '16:00' },
+                        { diaSemana: 'Quarta', horarioInicio: '14:00', horarioFim: '16:00' }
+                ]
+            },
             preRequisitoId: aed1.id,
             departamento: 'DC',
             periodoIdeal: 4,
@@ -370,7 +477,12 @@ async function main() {
             professor: 'Prof. Dr. Paulo Roberto Santos',
             creditos: 4,
             vagas: 40,
-            horario: 'Terça e Quinta. 16h-18h',
+            horarios: {
+                create: [
+                        { diaSemana: 'Terça', horarioInicio: '16:00', horarioFim: '18:00' },
+                        { diaSemana: 'Quinta', horarioInicio: '16:00', horarioFim: '18:00' }
+                ]
+            },
             preRequisitoId: aed1.id,
             departamento: 'DC',
             periodoIdeal: 4,

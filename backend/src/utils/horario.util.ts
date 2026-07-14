@@ -1,42 +1,30 @@
-export function checkTimeConflict(horario1: string, horario2: string): boolean {
-    // Expected format: 'Segunda, Quarta e Sexta. 08h-10h'
-    const parseHorario = (str: string) => {
-        const parts = str.split('.');
-        if (parts.length !== 2) return null;
-        
-        const daysStr = parts[0].trim();
-        const timeStr = parts[1].trim(); 
+interface HorarioEstruturado {
+    diaSemana: string;
+    horarioInicio: string;
+    horarioFim: string;
+}
 
-        const days = daysStr
-            .replace(/ e /g, ', ')
-            .split(',')
-            .map(d => d.trim().toLowerCase())
-            .filter(d => d.length > 0);
+function timeToMinutes(timeStr: string): number {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    return (hours * 60) + (minutes || 0);
+}
 
-        const timeParts = timeStr.split('-');
-        if (timeParts.length !== 2) return null;
+export function checkTimeConflict(horarios1: HorarioEstruturado[], horarios2: HorarioEstruturado[]): boolean {
+    for (const h1 of horarios1) {
+        for (const h2 of horarios2) {
+            // Se não forem no mesmo dia, não há conflito
+            if (h1.diaSemana !== h2.diaSemana) continue;
 
-        const start = parseInt(timeParts[0].replace('h', ''));
-        const end = parseInt(timeParts[1].replace('h', ''));
+            const start1 = timeToMinutes(h1.horarioInicio);
+            const end1 = timeToMinutes(h1.horarioFim);
+            const start2 = timeToMinutes(h2.horarioInicio);
+            const end2 = timeToMinutes(h2.horarioFim);
 
-        if (isNaN(start) || isNaN(end)) return null;
-
-        return { days, start, end };
-    };
-
-    const parsed1 = parseHorario(horario1);
-    const parsed2 = parseHorario(horario2);
-
-    if (!parsed1 || !parsed2) {
-        // Fallback to strict equality if parsing fails
-        return horario1.trim() === horario2.trim();
+            // Verifica se há sobreposição (start1 < end2 && start2 < end1)
+            if (start1 < end2 && start2 < end1) {
+                return true;
+            }
+        }
     }
-
-    const sharedDays = parsed1.days.some(day => parsed2.days.includes(day));
-    if (!sharedDays) return false;
-
-    // Check time overlap: (start1 < end2) && (start2 < end1)
-    const hasTimeOverlap = parsed1.start < parsed2.end && parsed2.start < parsed1.end;
-    
-    return hasTimeOverlap;
+    return false;
 }

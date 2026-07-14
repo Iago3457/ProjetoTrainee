@@ -1,4 +1,5 @@
 import { api } from './api';
+import { formatHorarios } from '../utils/horarioFormatter';
 
 export interface MinhaMateria {
     matriculaId: string;
@@ -34,7 +35,17 @@ export const matriculasService = {
         }
         
         const response = await api.get(url);
-        return response.data;
+        
+        // Formatar horarios para string antes de devolver ao componente
+        const data = response.data;
+        if (data && data.materias) {
+            data.materias = data.materias.map((m: any) => ({
+                ...m,
+                horario: m.horarios ? formatHorarios(m.horarios) : 'Sem horário'
+            }));
+        }
+        
+        return data;
     },
 
     cancelarInscricao: async (matriculaId: string) => {

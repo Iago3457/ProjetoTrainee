@@ -12,7 +12,7 @@ export class MatriculasService {
 
         const disciplinaAlvo = await this.prisma.disciplina.findUnique({
             where: { id: disciplinaId },
-            include: { preRequisito: true }
+            include: { preRequisito: true, horarios: true }
         });
 
         if (!disciplinaAlvo) {
@@ -21,7 +21,7 @@ export class MatriculasService {
 
         const historicoAluno = await this.prisma.matricula.findMany({
             where: { alunoId: alunoId },
-            include: { disciplina: true },
+            include: { disciplina: { include: { horarios: true } } },
         });
 
         const matriculasAtuais = historicoAluno.filter(
@@ -41,7 +41,7 @@ export class MatriculasService {
         }
 
         const conflitoHorario = matriculasAtuais.find(
-            m => checkTimeConflict(m.disciplina.horario, disciplinaAlvo.horario)
+            m => checkTimeConflict(m.disciplina.horarios, disciplinaAlvo.horarios)
         );
         if (conflitoHorario) {
             throw new ConflictException(`Conflito de horário com a disciplina: ${conflitoHorario.disciplina.nome}`);
@@ -91,7 +91,7 @@ export class MatriculasService {
                 semestre,
             },
             include: {
-                disciplina: true,
+                disciplina: { include: { horarios: true } },
             },
             orderBy: {
                 createdAt: 'desc',
@@ -108,7 +108,7 @@ export class MatriculasService {
             codigo: m.disciplina.codigo,
             nome: m.disciplina.nome,
             creditos: m.disciplina.creditos,
-            horario: m.disciplina.horario,
+            horarios: m.disciplina.horarios,
             status: m.status,
             semestre: `${anoAtual}.${semestreAtual}`,
         }));

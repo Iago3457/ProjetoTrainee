@@ -17,6 +17,7 @@ export class AdminService {
                 matriculas: {
                     where: { status: 'inscrito', semestre: semestreAtual, ano: anoAtual },
                 },
+                horarios: true,
             },
             orderBy: [{ periodoIdeal: 'asc' }, { codigo: 'asc' }],
         });
@@ -29,7 +30,7 @@ export class AdminService {
             professor: d.professor,
             creditos: d.creditos,
             vagas: d.vagas,
-            horario: d.horario,
+            horarios: d.horarios,
             departamento: d.departamento,
             periodoIdeal: d.periodoIdeal,
             preRequisito: d.preRequisito
@@ -46,7 +47,7 @@ export class AdminService {
         professor?: string;
         creditos: number;
         vagas: number;
-        horario: string;
+        horarios: { diaSemana: string; horarioInicio: string; horarioFim: string }[];
         departamento?: string;
         periodoIdeal?: number;
         preRequisitoId?: string;
@@ -68,7 +69,22 @@ export class AdminService {
             }
         }
 
-        return this.prisma.disciplina.create({ data: dados });
+        return this.prisma.disciplina.create({
+            data: {
+                codigo: dados.codigo,
+                nome: dados.nome,
+                descricao: dados.descricao,
+                professor: dados.professor,
+                creditos: dados.creditos,
+                vagas: dados.vagas,
+                departamento: dados.departamento,
+                periodoIdeal: dados.periodoIdeal,
+                preRequisitoId: dados.preRequisitoId,
+                horarios: {
+                    create: dados.horarios,
+                }
+            }
+        });
     }
 
     async atualizarDisciplina(
@@ -79,7 +95,7 @@ export class AdminService {
             professor?: string;
             creditos?: number;
             vagas?: number;
-            horario?: string;
+            horarios?: { diaSemana: string; horarioInicio: string; horarioFim: string }[];
             departamento?: string;
             periodoIdeal?: number;
             preRequisitoId?: string | null;
@@ -99,7 +115,25 @@ export class AdminService {
             }
         }
 
-        return this.prisma.disciplina.update({ where: { id }, data: dados });
+        return this.prisma.disciplina.update({ 
+            where: { id }, 
+            data: {
+                nome: dados.nome,
+                descricao: dados.descricao,
+                professor: dados.professor,
+                creditos: dados.creditos,
+                vagas: dados.vagas,
+                departamento: dados.departamento,
+                periodoIdeal: dados.periodoIdeal,
+                preRequisitoId: dados.preRequisitoId,
+                ...(dados.horarios && {
+                    horarios: {
+                        deleteMany: {},
+                        create: dados.horarios,
+                    }
+                })
+            } 
+        });
     }
 
     async excluirDisciplina(id: string) {

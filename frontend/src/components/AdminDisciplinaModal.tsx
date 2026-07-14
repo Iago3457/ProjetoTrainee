@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { XIcon } from '../assets/icons';
+import { XIcon, PlusIcon, TrashIcon } from '../assets/icons';
 import { AdminDisciplina } from '../services/admin.service';
 
 interface AdminDisciplinaModalProps {
@@ -24,7 +24,7 @@ export default function AdminDisciplinaModal({
     professor: '',
     creditos: 4,
     vagas: 40,
-    horario: '',
+    horarios: [] as { diaSemana: string; horarioInicio: string; horarioFim: string }[],
     departamento: '',
     periodoIdeal: 1,
     preRequisitoId: ''
@@ -42,7 +42,7 @@ export default function AdminDisciplinaModal({
         professor: disciplinaInicial.professor || '',
         creditos: disciplinaInicial.creditos || 4,
         vagas: disciplinaInicial.vagas || 40,
-        horario: disciplinaInicial.horario || '',
+        horarios: disciplinaInicial.horarios || [],
         departamento: disciplinaInicial.departamento || '',
         periodoIdeal: disciplinaInicial.periodoIdeal || 1,
         preRequisitoId: disciplinaInicial.preRequisito?.id || ''
@@ -55,7 +55,7 @@ export default function AdminDisciplinaModal({
         professor: '',
         creditos: 4,
         vagas: 40,
-        horario: '',
+        horarios: [],
         departamento: '',
         periodoIdeal: 1,
         preRequisitoId: ''
@@ -77,6 +77,25 @@ export default function AdminDisciplinaModal({
     setFormData(prev => ({ ...prev, [name]: finalValue }));
   };
 
+  const handleHorarioChange = (index: number, field: string, value: string) => {
+    const newHorarios = [...formData.horarios];
+    newHorarios[index] = { ...newHorarios[index], [field]: value };
+    setFormData(prev => ({ ...prev, horarios: newHorarios }));
+  };
+
+  const addHorario = () => {
+    setFormData(prev => ({
+      ...prev,
+      horarios: [...prev.horarios, { diaSemana: 'Segunda', horarioInicio: '08:00', horarioFim: '10:00' }]
+    }));
+  };
+
+  const removeHorario = (index: number) => {
+    const newHorarios = [...formData.horarios];
+    newHorarios.splice(index, 1);
+    setFormData(prev => ({ ...prev, horarios: newHorarios }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setCarregando(true);
@@ -95,6 +114,12 @@ export default function AdminDisciplinaModal({
           if (disciplinaInicial) {
               (dataToSave as any).preRequisitoId = null; // explicit null to remove it on update
           }
+      }
+
+      if (dataToSave.horarios.length === 0) {
+        setErro('Adicione ao menos um horário para a disciplina.');
+        setCarregando(false);
+        return;
       }
 
       await onSave(dataToSave);
@@ -253,20 +278,6 @@ export default function AdminDisciplinaModal({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Horário */}
-              <div className="flex flex-col gap-1">
-                <label className="text-[13px] font-medium text-[#B0ADC0]">Horário *</label>
-                <input
-                  type="text"
-                  name="horario"
-                  value={formData.horario}
-                  onChange={handleChange}
-                  required
-                  placeholder="Ex: Seg e Qua. 08h-10h"
-                  className="w-full border border-[#2A2940] rounded-lg px-3 py-2 bg-[#12111E] text-white text-sm focus:border-brand-primary/50 outline-none"
-                />
-              </div>
-
               {/* Pré Requisito */}
               <div className="flex flex-col gap-1">
                 <label className="text-[13px] font-medium text-[#B0ADC0]">Pré-Requisito</label>
@@ -286,6 +297,63 @@ export default function AdminDisciplinaModal({
                   ))}
                 </select>
               </div>
+            </div>
+
+            {/* Horários Dinâmicos */}
+            <div className="flex flex-col gap-3 mt-2 border-t border-[#2A2940] pt-4">
+              <div className="flex justify-between items-center">
+                <label className="text-[13px] font-medium text-[#B0ADC0]">Horários da Disciplina *</label>
+                <button
+                  type="button"
+                  onClick={addHorario}
+                  className="text-xs font-semibold flex items-center gap-1 text-brand-primary hover:text-brand-accent transition-colors"
+                >
+                  <PlusIcon className="w-3.5 h-3.5" /> Adicionar
+                </button>
+              </div>
+
+              {formData.horarios.length === 0 && (
+                <div className="text-sm text-[#9794A8] bg-[#12111E] p-4 rounded-lg text-center border border-[#2A2940] border-dashed">
+                  Nenhum horário definido. Adicione pelo menos um.
+                </div>
+              )}
+
+              {formData.horarios.map((h, index) => (
+                <div key={index} className="flex gap-2 items-center">
+                  <select
+                    value={h.diaSemana}
+                    onChange={(e) => handleHorarioChange(index, 'diaSemana', e.target.value)}
+                    className="flex-1 border border-[#2A2940] rounded-lg px-3 py-2 bg-[#12111E] text-white text-sm focus:border-brand-primary/50 outline-none"
+                  >
+                    <option value="Segunda">Segunda</option>
+                    <option value="Terça">Terça</option>
+                    <option value="Quarta">Quarta</option>
+                    <option value="Quinta">Quinta</option>
+                    <option value="Sexta">Sexta</option>
+                    <option value="Sábado">Sábado</option>
+                  </select>
+                  <input
+                    type="time"
+                    value={h.horarioInicio}
+                    onChange={(e) => handleHorarioChange(index, 'horarioInicio', e.target.value)}
+                    className="w-[110px] border border-[#2A2940] rounded-lg px-3 py-2 bg-[#12111E] text-white text-sm focus:border-brand-primary/50 outline-none"
+                  />
+                  <span className="text-[#9794A8]">às</span>
+                  <input
+                    type="time"
+                    value={h.horarioFim}
+                    onChange={(e) => handleHorarioChange(index, 'horarioFim', e.target.value)}
+                    className="w-[110px] border border-[#2A2940] rounded-lg px-3 py-2 bg-[#12111E] text-white text-sm focus:border-brand-primary/50 outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeHorario(index)}
+                    className="p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                  >
+                    <TrashIcon className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
             </div>
 
           </form>

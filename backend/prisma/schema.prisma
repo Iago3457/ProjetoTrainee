@@ -36,13 +36,14 @@ model Disciplina {
   professor String?
   creditos Int
   vagas Int
-  horario String //tabela de horários?
   departamento String?
   periodoIdeal Int?
   
   preRequisitoId String?
   preRequisito Disciplina? @relation("PreRequisito", fields: [preRequisitoId], references: [id])
   dependentes Disciplina[] @relation("PreRequisito")
+  
+  horarios Horario[]
 
   matriculas Matricula[]
 
@@ -77,4 +78,14 @@ model Admin {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Horario {
+  id String @id @default(uuid())
+  diaSemana String
+  horarioInicio String
+  horarioFim String
+
+  disciplinaId String
+  disciplina Disciplina @relation(fields: [disciplinaId], references: [id], onDelete: Cascade)
 }

@@ -4,6 +4,7 @@ import { disciplinasService, DisciplinaDetalhes } from '../services/disciplinas.
 import { matriculasService } from '../services/matriculas.service';
 import { XIcon, ClockIcon, CreditBookIcon, UserTeacherIcon, CheckCircleIcon, XCircleIcon } from '../assets/icons';
 import Badge from './Badge';
+import { formatHorarios } from '../utils/horarioFormatter';
 
 interface DisciplinaDetailModalProps {
   disciplinaId: string;
@@ -152,8 +153,8 @@ export default function DisciplinaDetailModal({ disciplinaId, onClose, onInscric
               <span className="text-[10px] uppercase font-bold text-ui-muted flex items-center gap-1">
                 <ClockIcon className="w-3 h-3" /> Horário
               </span>
-              <span className="text-sm font-semibold text-ui-dark truncate" title={detalhes.horario}>
-                {detalhes.horario}
+              <span className="text-sm font-semibold text-ui-dark truncate" title={detalhes.horarios ? formatHorarios(detalhes.horarios) : 'Sem horário'}>
+                {detalhes.horarios ? formatHorarios(detalhes.horarios) : 'Sem horário'}
               </span>
             </div>
             <div className="flex flex-col gap-1">
