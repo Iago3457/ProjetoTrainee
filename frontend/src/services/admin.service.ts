@@ -13,6 +13,7 @@ export interface AdminDisciplina {
     periodoIdeal: number | null;
     preRequisito: { id: string; codigo: string; nome: string } | null;
     vagasOcupadas: number;
+    inscritos: { id: string; nome: string; email: string; ra: string }[];
 }
 
 export interface MatriculaPendente {

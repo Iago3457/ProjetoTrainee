@@ -16,6 +16,9 @@ export class AdminService {
                 preRequisito: { select: { id: true, codigo: true, nome: true } },
                 matriculas: {
                     where: { status: 'inscrito', semestre: semestreAtual, ano: anoAtual },
+                    include: {
+                        aluno: { select: { id: true, nome: true, email: true, ra: true } }
+                    }
                 },
                 horarios: true,
             },
@@ -37,6 +40,7 @@ export class AdminService {
                 ? { id: d.preRequisito.id, codigo: d.preRequisito.codigo, nome: d.preRequisito.nome }
                 : null,
             vagasOcupadas: d.matriculas.length,
+            inscritos: d.matriculas.map(m => m.aluno),
         }));
     }
 
