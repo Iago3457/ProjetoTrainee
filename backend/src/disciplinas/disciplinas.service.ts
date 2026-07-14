@@ -14,7 +14,8 @@ export class DisciplinasService {
                 preRequisito: true,
                 matriculas: {
                     where: { status: 'inscrito', semestre: semestreAtual, ano: anoAtual }
-                }
+                },
+                horarios: true
             }
         });
 
@@ -81,7 +82,7 @@ export class DisciplinasService {
                 nome: disciplina.nome,
                 creditos: disciplina.creditos,
                 vagasTotais: disciplina.vagas,
-                horario: disciplina.horario,
+                horarios: disciplina.horarios,
                 vagasOcupadas: vagasOcupadas,
                 limiteCreditosAtingido: limiteCreditosAtingido,
                 infoPreRequisito: infoPreRequisito,
@@ -110,6 +111,7 @@ export class DisciplinasService {
                 matriculas: {
                     where: { status: 'inscrito', semestre: semestreAtual, ano: anoAtual },
                 },
+                horarios: true,
             },
         });
 
@@ -124,7 +126,7 @@ export class DisciplinasService {
         while (currentDisc.preRequisitoId) {
             const preReq = await this.prisma.disciplina.findUnique({
                 where: { id: currentDisc.preRequisitoId },
-                include: { preRequisito: true },
+                include: { preRequisito: true, horarios: true },
             });
 
             if (!preReq) break;
@@ -167,7 +169,7 @@ export class DisciplinasService {
             creditos: disciplina.creditos,
             vagasTotais: disciplina.vagas,
             vagasOcupadas,
-            horario: disciplina.horario,
+            horarios: disciplina.horarios,
             preRequisitos,
             statusAluno: matriculaAtual?.status || null,
         };

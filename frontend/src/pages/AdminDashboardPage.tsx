@@ -4,6 +4,7 @@ import { adminService, AdminDisciplina, MatriculaPendente } from '../services/ad
 import { GraduationCapIcon, SearchIcon, PlusIcon, EditIcon, TrashIcon, LogOutIcon, CheckCircleIcon, XCircleIcon } from '../assets/icons'
 import AdminDisciplinaModal from '../components/AdminDisciplinaModal'
 import { toast } from 'react-hot-toast'
+import { formatHorarios } from '../utils/horarioFormatter'
 
 interface AdminDashboardPageProps {
   onNavigate?: (page: Page) => void
@@ -236,7 +237,7 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
                       </td>
                       <td className="px-6 py-4">
                         <p className="text-sm font-medium text-white">{d.nome}</p>
-                        <p className="text-xs text-[#9794A8] mt-0.5">{d.creditos} Créditos • {d.horario}</p>
+                        <p className="text-xs text-[#9794A8] mt-0.5">{d.creditos} Créditos • {d.horarios ? formatHorarios(d.horarios) : 'Sem horário'}</p>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-[#B0ADC0]">
                         {d.departamento || '-'} / {d.periodoIdeal ? `${d.periodoIdeal}º Sem` : '-'}

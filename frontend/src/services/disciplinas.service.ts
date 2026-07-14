@@ -1,5 +1,6 @@
 import { api } from "./api";
 import { DisciplinaCardProps } from "../components/DisciplinaCard";
+import { formatHorarios } from "../utils/horarioFormatter";
 
 export interface ListarCatalogoResponse {
     creditosAtuais: number;
@@ -33,7 +34,7 @@ export interface DisciplinaDetalhes {
     creditos: number;
     vagasTotais: number;
     vagasOcupadas: number;
-    horario: string;
+    horarios: { diaSemana: string; horarioInicio: string; horarioFim: string }[];
     preRequisitos: PreRequisitoDetalhe[];
     statusAluno: string | null;
     departamento: string | null;
@@ -54,7 +55,7 @@ export const disciplinasService = {
             nome: d.nome,
             vagasOcupadas: d.vagasOcupadas,
             vagasTotais: d.vagasTotais,
-            periodo: d.horario, // Mapeia o horário ("Segunda e Quarta...") para ser exibido no card
+            periodo: formatHorarios(d.horarios), // Formata a nova lista estruturada de horários
             creditos: d.creditos,
             statusInscricao: d.statusInscricao,
             preRequisito: d.infoPreRequisito || undefined,

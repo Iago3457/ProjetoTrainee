@@ -8,7 +8,7 @@ export interface AdminDisciplina {
     professor: string | null;
     creditos: number;
     vagas: number;
-    horario: string;
+    horarios: { diaSemana: string; horarioInicio: string; horarioFim: string }[];
     departamento: string | null;
     periodoIdeal: number | null;
     preRequisito: { id: string; codigo: string; nome: string } | null;
@@ -41,7 +41,7 @@ export const adminService = {
         professor?: string;
         creditos: number;
         vagas: number;
-        horario: string;
+        horarios: { diaSemana: string; horarioInicio: string; horarioFim: string }[];
         departamento?: string;
         periodoIdeal?: number;
         preRequisitoId?: string;
