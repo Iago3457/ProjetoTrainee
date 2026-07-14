@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Page } from '../types'
 import { adminService, AdminDisciplina, MatriculaPendente } from '../services/admin.service'
-import { GraduationCapIcon, SearchIcon, PlusIcon, EditIcon, TrashIcon, LogOutIcon, CheckCircleIcon, XCircleIcon } from '../assets/icons'
+import { GraduationCapIcon, SearchIcon, PlusIcon, EditIcon, TrashIcon, LogOutIcon, CheckCircleIcon, XCircleIcon, UsersIcon } from '../assets/icons'
 import AdminDisciplinaModal from '../components/AdminDisciplinaModal'
+import AdminAlunosModal from '../components/AdminAlunosModal'
 import { toast } from 'react-hot-toast'
 import { formatHorarios } from '../utils/horarioFormatter'
 
@@ -18,7 +19,9 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
   const [loading, setLoading] = useState(true)
   
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isAlunosModalOpen, setIsAlunosModalOpen] = useState(false)
   const [disciplinaSelecionada, setDisciplinaSelecionada] = useState<AdminDisciplina | null>(null)
+  const [disciplinaAlunosSelecionada, setDisciplinaAlunosSelecionada] = useState<AdminDisciplina | null>(null)
 
   const carregarDados = async () => {
     try {
@@ -66,6 +69,11 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
       toast.success('Disciplina criada!')
     }
     carregarDados()
+  }
+
+  const handleVerAlunos = (disciplina: AdminDisciplina) => {
+    setDisciplinaAlunosSelecionada(disciplina)
+    setIsAlunosModalOpen(true)
   }
 
   const handleExcluirDisciplina = async (id: string) => {
@@ -261,6 +269,13 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
                       <td className="px-6 py-4 whitespace-nowrap text-right">
                         <div className="flex items-center justify-end gap-2">
                           <button 
+                            onClick={() => handleVerAlunos(d)}
+                            className="p-1.5 text-[#9794A8] hover:text-brand-primary hover:bg-brand-primary/10 rounded transition-colors"
+                            title="Ver Inscritos"
+                          >
+                            <UsersIcon className="w-4 h-4" />
+                          </button>
+                          <button 
                             onClick={() => handleEditarDisciplina(d)}
                             className="p-1.5 text-[#9794A8] hover:text-white hover:bg-[#2A2940] rounded transition-colors"
                             title="Editar"
@@ -362,6 +377,11 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
         todasDisciplinas={disciplinas}
       />
 
+      <AdminAlunosModal 
+        isOpen={isAlunosModalOpen}
+        onClose={() => setIsAlunosModalOpen(false)}
+        disciplina={disciplinaAlunosSelecionada}
+      />
     </div>
   )
 }
