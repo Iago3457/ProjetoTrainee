@@ -82,8 +82,8 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const handleInscrever = async(disciplinaId: string) => {
     try {
       setEnrollingId(disciplinaId);
-      await matriculasService.inscrever(disciplinaId);
-      toast.success('Inscrição realizada com sucesso');
+      const res = await matriculasService.inscrever(disciplinaId);
+      toast.success(res.mensagem || 'Inscrição requisitada com sucesso');
       await refreshCatalogo();
     } catch (error: any) {
       const mensagemErro = error.response?.data?.message || 'Erro ao inscrever-se na disciplina';

@@ -28,7 +28,7 @@ export default function EnrollButton({ status, onClick, isLoading }: EnrollButto
   if (status === 'requisitada') {
     return (
       <button disabled className={`${baseClasses} bg-amber-100 text-amber-700 border border-amber-200`}>
-        <CheckCircleIcon className="text-amber-600" /> Requisitada
+        <CheckCircleIcon className="text-amber-600" /> Requisitado
       </button>
     );
   }

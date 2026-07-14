@@ -99,7 +99,7 @@ export class MatriculasService {
         });
 
         const creditosAtuais = matriculas
-            .filter(m => m.status === 'inscrito' || m.status === 'confirmada')
+            .filter(m => m.status === 'inscrito' || m.status === 'confirmada' || m.status === 'requisitada')
             .reduce((total, m) => total + m.disciplina.creditos, 0);
 
         const materiasFormatadas = matriculas.map((m) => ({
@@ -133,8 +133,8 @@ export class MatriculasService {
             throw new BadRequestException('Matrícula não pertence a este aluno');
         }
 
-        if (matricula.status !== 'inscrito') {
-            throw new BadRequestException('Somente matrículas com status "inscrito" podem ser canceladas');
+        if (matricula.status !== 'inscrito' && matricula.status !== 'requisitada') {
+            throw new BadRequestException('Somente matrículas com status "inscrito" ou "requisitada" podem ser canceladas');
         }
         const anoAtual = new Date().getFullYear();
         const semestreAtual = 1;

@@ -24,7 +24,7 @@ export class DisciplinasService {
 
         // Calcula quantos créditos já foram utilizados neste semestre
         const matriculasAtuais = historicoAluno.filter(
-            (m) => m.status === 'inscrito' && m.semestre === semestreAtual && m.ano === anoAtual
+            (m) => (m.status === 'inscrito' || m.status === 'requisitada') && m.semestre === semestreAtual && m.ano === anoAtual
         );
 
         let creditosAtuais = 0;

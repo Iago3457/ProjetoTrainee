@@ -99,6 +99,7 @@ export default function DisciplinaDetailModal({ disciplinaId, onClose, onInscric
 
   const faltamRequisitos = detalhes.preRequisitos.some(pr => !pr.atendido);
   const isInscrito = detalhes.statusAluno === 'inscrito';
+  const isRequisitado = detalhes.statusAluno === 'requisitada';
   const isAprovado = detalhes.statusAluno === 'aprovado' || detalhes.statusAluno === 'concluida';
   
   const isCheio = detalhes.vagasTotais - detalhes.vagasOcupadas <= 0;
@@ -196,11 +197,14 @@ export default function DisciplinaDetailModal({ disciplinaId, onClose, onInscric
           )}
         </div>
 
-        {/* Footer actions */}
         <div className="p-5 border-t border-ui-border bg-ui-bg mt-auto">
           {isInscrito ? (
              <div className="w-full bg-brand-light text-brand-primary font-bold text-sm py-3 rounded-xl flex items-center justify-center gap-2">
                <CheckCircleIcon /> Você já está inscrito nesta disciplina
+             </div>
+          ) : isRequisitado ? (
+             <div className="w-full bg-amber-100 text-amber-700 font-bold text-sm py-3 rounded-xl flex items-center justify-center gap-2">
+               <CheckCircleIcon className="text-amber-600" /> Sua inscrição foi requisitada e aguarda aprovação
              </div>
           ) : isAprovado ? (
             <div className="w-full bg-green-100 text-green-700 font-bold text-sm py-3 rounded-xl flex items-center justify-center gap-2">
