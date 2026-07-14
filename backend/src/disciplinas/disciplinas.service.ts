@@ -39,7 +39,8 @@ export class DisciplinasService {
         const limiteCreditosAtingido = creditosAtuais >= 24;
 
         const catalogoFormatado = disciplinas.map((disciplina) => {
-            const jaInscrito = matriculasAtuais.some((m) => m.disciplinaID === disciplina.id);
+            const jaInscrito = matriculasAtuais.some((m) => m.disciplinaID === disciplina.id && m.status === 'inscrito');
+            const jaRequisitado = matriculasAtuais.some((m) => m.disciplinaID === disciplina.id && m.status === 'requisitada');
 
             let infoPreRequisito: { atendido: boolean; mensagem: string } | null = null;
 
@@ -66,6 +67,8 @@ export class DisciplinasService {
                 statusInscricao = 'concluido';
             } else if (jaInscrito) {
                 statusInscricao = 'inscrito';
+            } else if (jaRequisitado) {
+                statusInscricao = 'requisitada';
             } else if (infoPreRequisito && !infoPreRequisito.atendido) {
                 statusInscricao = 'indisponivel';
             }

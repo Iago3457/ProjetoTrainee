@@ -25,7 +25,7 @@ export class MatriculasService {
         });
 
         const matriculasAtuais = historicoAluno.filter(
-            (m) => m.status === 'inscrito' && m.ano === anoAtual && m.semestre === semestreAtual
+            (m) => (m.status === 'inscrito' || m.status === 'requisitada') && m.ano === anoAtual && m.semestre === semestreAtual
         );
 
         const jaInscrito = matriculasAtuais.some(m => m.disciplinaID === disciplinaId);
@@ -67,12 +67,12 @@ export class MatriculasService {
                 disciplinaID: disciplinaId,
                 ano: anoAtual,
                 semestre: semestreAtual,
-                status: 'inscrito'
+                status: 'requisitada'
             }
         })
 
         return {
-            mensagem: 'Inscrição realizada com sucesso!',
+            mensagem: 'Inscrição requisitada com sucesso! Aguarde aprovação.',
             matricula: novaMatricula,
         };
     }

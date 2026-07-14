@@ -11,6 +11,7 @@ interface MatriculaCardProps extends MinhaMateria {
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { bg: string; text: string; label: string }> = {
     inscrito: { bg: 'bg-brand-light', text: 'text-brand-primary', label: 'Inscrito' },
+    requisitada: { bg: 'bg-amber-100', text: 'text-amber-700', label: 'Requisitada' },
     confirmada: { bg: 'bg-indigo-100', text: 'text-indigo-700', label: 'Confirmada' },
     pendente: { bg: 'bg-orange-100', text: 'text-orange-700', label: 'Pendente' },
     aprovado: { bg: 'bg-green-100', text: 'text-green-700', label: 'Aprovado' },
@@ -30,7 +31,7 @@ export default function MatriculaCard({
   matriculaId, codigo, nome, creditos, horario, status, semestre, onCancelar, isCanceling, onVerDetalhes
 }: MatriculaCardProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const canCancel = status === 'inscrito';
+  const canCancel = status === 'inscrito' || status === 'requisitada';
 
   return (
     <div className="bg-white rounded-xl border border-ui-border p-5 flex flex-col gap-3 transition-all hover:shadow-md">
