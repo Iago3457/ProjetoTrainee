@@ -10,7 +10,7 @@ export interface DisciplinaCardProps {
   vagasTotais: number;
   periodo: number | string;
   creditos: number;
-  statusInscricao: 'disponivel' | 'inscrito' | 'indisponivel' | 'concluido';
+  statusInscricao: 'disponivel' | 'inscrito' | 'indisponivel' | 'concluido' | 'requisitada';
   preRequisito?: { atendido: boolean; mensagem: string };
   limiteCreditosAtingido?: boolean;
   onInscrever?: () => void;
@@ -27,16 +27,17 @@ export default function DisciplinaCard({
   
   const isBloqueado = (preRequisito && !preRequisito.atendido) || (statusInscricao === 'indisponivel');
   const isInscrito = statusInscricao === 'inscrito';
+  const isRequisitado = statusInscricao === 'requisitada';
   const isConcluido = statusInscricao === 'concluido';
   
-  const buttonStatus = isConcluido ? 'concluido' : isInscrito ? 'inscrito' : isBloqueado ? 'bloqueado' : 'disponivel';
+  const buttonStatus = isConcluido ? 'concluido' : isInscrito ? 'inscrito' : isRequisitado ? 'requisitada' : isBloqueado ? 'bloqueado' : 'disponivel';
 
   const vagasRestantes = vagasTotais - vagasOcupadas;
   const isCheio = vagasRestantes <= 0;
 
   return (
     <div 
-      className={`p-5 rounded-xl border bg-white flex flex-col gap-3 transition-all cursor-pointer hover:border-brand-primary/40 ${isInscrito ? 'border-brand-primary/30 shadow-sm' : 'border-ui-border'}`}
+      className={`p-5 rounded-xl border bg-white flex flex-col gap-3 transition-all cursor-pointer hover:border-brand-primary/40 ${(isInscrito || isRequisitado) ? 'border-brand-primary/30 shadow-sm' : 'border-ui-border'}`}
       onClick={onVerDetalhes}
     >
       
@@ -94,7 +95,7 @@ export default function DisciplinaCard({
           </Badge>
         )}
         
-        {limiteCreditosAtingido && !isInscrito && (
+        {limiteCreditosAtingido && !isInscrito && !isRequisitado && (
           <Badge variant="warning" icon="⚠">
             Limite de 24 créditos atingido
           </Badge>

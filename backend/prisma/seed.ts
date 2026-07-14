@@ -18,6 +18,7 @@ async function main() {
     await prisma.matricula.deleteMany();
     await prisma.disciplina.deleteMany();
     await prisma.aluno.deleteMany();
+    await prisma.admin.deleteMany();
 
     const senhaPadraoHash = await bcrypt.hash('123456', 10);
 
@@ -463,12 +464,22 @@ async function main() {
         console.log(`  ✅ ${aluno.nome}: ${semestreAtual - 1} semestre(s) concluído(s), inscrito em ${disciplinasAtuais.length} matérias`);
     }
 
+    console.log('\n🔐 Criando administrador padrão...');
+    await prisma.admin.create({
+        data: {
+            nome: 'Administrador',
+            email: 'admin@ufscar.br',
+            senha: senhaPadraoHash,
+        },
+    });
+
     console.log('\n🎉 Seed concluído com sucesso!');
     console.log('Credenciais de acesso:');
     console.log('  semestre1@estudante.ufscar.br / 123456');
     console.log('  semestre2@estudante.ufscar.br / 123456');
     console.log('  semestre3@estudante.ufscar.br / 123456');
     console.log('  semestre4@estudante.ufscar.br / 123456');
+    console.log('  admin@ufscar.br / 123456 (Admin)');
 }
 
 main()

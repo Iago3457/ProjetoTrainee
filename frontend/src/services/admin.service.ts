@@ -1,0 +1,77 @@
+import { api } from './api';
+
+export interface AdminDisciplina {
+    id: string;
+    codigo: string;
+    nome: string;
+    descricao: string | null;
+    professor: string | null;
+    creditos: number;
+    vagas: number;
+    horario: string;
+    departamento: string | null;
+    periodoIdeal: number | null;
+    preRequisito: { id: string; codigo: string; nome: string } | null;
+    vagasOcupadas: number;
+}
+
+export interface MatriculaPendente {
+    id: string;
+    status: string;
+    createdAt: string;
+    aluno: { id: string; nome: string; email: string; ra: string };
+    disciplina: { id: string; codigo: string; nome: string };
+}
+
+export const adminService = {
+    login: async (email: string, senha: string) => {
+        const response = await api.post('/auth/admin/login', { email, senha });
+        return response.data;
+    },
+
+    listarDisciplinas: async (): Promise<AdminDisciplina[]> => {
+        const response = await api.get('/admin/disciplinas');
+        return response.data;
+    },
+
+    criarDisciplina: async (dados: {
+        codigo: string;
+        nome: string;
+        descricao?: string;
+        professor?: string;
+        creditos: number;
+        vagas: number;
+        horario: string;
+        departamento?: string;
+        periodoIdeal?: number;
+        preRequisitoId?: string;
+    }) => {
+        const response = await api.post('/admin/disciplinas', dados);
+        return response.data;
+    },
+
+    atualizarDisciplina: async (id: string, dados: Record<string, any>) => {
+        const response = await api.put(`/admin/disciplinas/${id}`, dados);
+        return response.data;
+    },
+
+    excluirDisciplina: async (id: string) => {
+        const response = await api.delete(`/admin/disciplinas/${id}`);
+        return response.data;
+    },
+
+    listarPendentes: async (): Promise<MatriculaPendente[]> => {
+        const response = await api.get('/admin/matriculas/pendentes');
+        return response.data;
+    },
+
+    aprovarMatricula: async (id: string) => {
+        const response = await api.put(`/admin/matriculas/${id}/aprovar`);
+        return response.data;
+    },
+
+    rejeitarMatricula: async (id: string) => {
+        const response = await api.put(`/admin/matriculas/${id}/rejeitar`);
+        return response.data;
+    },
+};

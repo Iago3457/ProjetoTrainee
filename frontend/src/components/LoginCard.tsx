@@ -104,16 +104,25 @@ export default function LoginCard({ onNavigate }: LoginCardProps) {
       </form>
 
       <div className="border-t border-ui-border w-full pt-[25px]">
-        <div className="flex items-center justify-center gap-1">
-          <span className="text-base text-ui-medium leading-6">
-            Não tem uma conta?
-          </span>
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex items-center gap-1">
+            <span className="text-base text-ui-medium leading-6">
+              Não tem uma conta?
+            </span>
+            <button
+              type="button"
+              onClick={() => onNavigate?.('signup')}
+              className="font-medium text-sm text-brand-primary leading-5 hover:underline"
+            >
+              Cadastre-se
+            </button>
+          </div>
           <button
             type="button"
-            onClick={() => onNavigate?.('signup')}
-            className="font-medium text-sm text-brand-primary leading-5 hover:underline"
+            onClick={() => onNavigate?.('admin-login')}
+            className="text-xs text-ui-muted hover:text-ui-dark transition-colors"
           >
-            Cadastre-se
+            Entrar como Administrador
           </button>
         </div>
       </div>
