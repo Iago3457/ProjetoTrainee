@@ -29,7 +29,7 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
     setCarregando(true)
 
     try {
-      const response = await fetch('http://localhost:3000/auth/cadastro', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/auth/cadastro`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
