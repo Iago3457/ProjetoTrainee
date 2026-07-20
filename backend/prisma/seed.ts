@@ -19,6 +19,7 @@ async function main() {
     await prisma.disciplina.deleteMany();
     await prisma.aluno.deleteMany();
     await prisma.admin.deleteMany();
+    await prisma.config.deleteMany();
 
     const senhaPadraoHash = await bcrypt.hash('123456', 10);
 
