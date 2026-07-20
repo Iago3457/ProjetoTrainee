@@ -14,6 +14,11 @@ async function bootstrap() {
     .setDescription('Documentação da API de Matrícula Fácil')
     .setVersion('1.0')
     .addBearerAuth()
+    .addTag('Auth', 'Cadastro, login de alunos e login de administradores')
+    .addTag('Disciplinas', 'Catálogo e detalhes de disciplinas (requer autenticação de aluno)')
+    .addTag('Matrículas', 'Inscrição, listagem e cancelamento de matrículas do aluno')
+    .addTag('Admin', 'Gestão de disciplinas e aprovação de matrículas (requer autenticação de admin)')
+    .addTag('Aluno', 'Perfil e configurações do aluno')
     .build();
     
   const document = SwaggerModule.createDocument(app, config);
