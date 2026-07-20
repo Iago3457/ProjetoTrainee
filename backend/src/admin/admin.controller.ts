@@ -6,6 +6,7 @@ import {
     Delete,
     Body,
     Param,
+    Query,
     UseGuards,
     Request,
     UnauthorizedException,
@@ -152,10 +153,10 @@ export class AdminController {
     @ApiQuery({ name: 'semestre', required: false, type: Number })
     @ApiResponse({ status: 200, description: 'Matrículas retornadas com sucesso (agrupadas por disciplina).' })
     @ApiResponse({ status: 401, description: 'Não autorizado.' })
-    async listarMatriculasSemestre(@Request() req, @Request() query) {
+    async listarMatriculasSemestre(@Request() req, @Query() query) {
         this.assertAdmin(req);
-        const ano = query.query?.ano ? parseInt(query.query.ano) : undefined;
-        const semestre = query.query?.semestre ? parseInt(query.query.semestre) : undefined;
+        const ano = query?.ano ? parseInt(query.ano) : undefined;
+        const semestre = query?.semestre ? parseInt(query.semestre) : undefined;
         return this.adminService.listarMatriculasSemestre(ano, semestre);
     }
 
