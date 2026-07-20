@@ -10,6 +10,7 @@ import { matriculasService, MinhaMateria } from '../services/matriculas.service'
 import { User, Page } from '../types'
 import DisciplinaDetailModal from '../components/DisciplinaDetailModal'
 import SearchBar from '../components/SearchBar'
+import ConfirmModal from '../components/ConfirmModal'
 
 interface MinhasMateriasPageProps {
   onNavigate?: (page: Page) => void
@@ -22,6 +23,7 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
   const [cancelingId, setCancelingId] = useState<string | null>(null);
+  const [confirmCancelId, setConfirmCancelId] = useState<string | null>(null);
   const [selectedDisciplinaId, setSelectedDisciplinaId] = useState<string | null>(null);
   const [filtroAno, setFiltroAno] = useState<number>(new Date().getFullYear());
   const [filtroSemestre, setFiltroSemestre] = useState<number>(1);
@@ -73,13 +75,16 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
     loadData();
   }, [filtroAno, filtroSemestre]);
 
-  const handleCancelar = async (matriculaId: string) => {
-    const confirmacao = window.confirm('Tem certeza que deseja cancelar esta inscrição?');
-    if (!confirmacao) return;
+  const handleCancelar = (matriculaId: string) => {
+    setConfirmCancelId(matriculaId);
+  };
+
+  const confirmarCancelamento = async () => {
+    if (!confirmCancelId) return;
 
     try {
-      setCancelingId(matriculaId);
-      await matriculasService.cancelarInscricao(matriculaId);
+      setCancelingId(confirmCancelId);
+      await matriculasService.cancelarInscricao(confirmCancelId);
       toast.success('Inscrição cancelada com sucesso!');
       await loadData();
     } catch (error: any) {
@@ -87,6 +92,7 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
       toast.error(mensagemErro);
     } finally {
       setCancelingId(null);
+      setConfirmCancelId(null);
     }
   };
 
@@ -199,6 +205,18 @@ export default function MinhasMateriasPage({ onNavigate }: MinhasMateriasPagePro
           disciplinaId={selectedDisciplinaId}
           onClose={() => setSelectedDisciplinaId(null)}
           onInscricaoSuccess={loadData}
+        />
+      )}
+
+      {confirmCancelId && (
+        <ConfirmModal
+          title="Cancelar Inscrição"
+          message="Tem certeza que deseja cancelar esta inscrição? Esta ação não pode ser desfeita."
+          confirmText="Sim, Cancelar"
+          cancelText="Não, Voltar"
+          onConfirm={confirmarCancelamento}
+          onCancel={() => setConfirmCancelId(null)}
+          isConfirming={cancelingId === confirmCancelId}
         />
       )}
     </div>
