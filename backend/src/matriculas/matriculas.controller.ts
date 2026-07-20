@@ -33,10 +33,11 @@ export class MatriculasController {
     @UseGuards(AuthGuard)
     @Post(':disciplinaId/inscrever')
     @ApiOperation({ summary: 'Inscrever-se em uma disciplina' })
-    @ApiParam({ name: 'disciplinaId', description: 'ID da disciplina' })
+    @ApiParam({ name: 'disciplinaId', description: 'ID (UUID) da disciplina' })
     @ApiResponse({ status: 201, description: 'Inscrição realizada com sucesso.' })
-    @ApiResponse({ status: 400, description: 'Limite de créditos excedido ou pré-requisito não cumprido.' })
-    @ApiResponse({ status: 409, description: 'Conflito de horário ou já inscrito.' })
+    @ApiResponse({ status: 400, description: 'Limite de créditos excedido, pré-requisito não cumprido ou disciplina não encontrada.' })
+    @ApiResponse({ status: 401, description: 'Não autorizado.' })
+    @ApiResponse({ status: 409, description: 'Conflito de horário, já inscrito ou já concluiu a disciplina.' })
     async inscrever(
         @Request() req,
         @Param('disciplinaId') disciplinaId: string
@@ -49,9 +50,10 @@ export class MatriculasController {
     @UseGuards(AuthGuard)
     @Delete(':matriculaId/cancelar')
     @ApiOperation({ summary: 'Cancelar uma inscrição do semestre atual' })
-    @ApiParam({ name: 'matriculaId', description: 'ID da matrícula' })
+    @ApiParam({ name: 'matriculaId', description: 'ID (UUID) da matrícula' })
     @ApiResponse({ status: 200, description: 'Inscrição cancelada com sucesso.' })
-    @ApiResponse({ status: 400, description: 'Matrícula não pertence ao semestre atual ou não encontrada.' })
+    @ApiResponse({ status: 400, description: 'Matrícula não encontrada, não pertence ao aluno, status inválido ou fora do semestre atual.' })
+    @ApiResponse({ status: 401, description: 'Não autorizado.' })
     async cancelar(
         @Request() req,
         @Param('matriculaId') matriculaId: string

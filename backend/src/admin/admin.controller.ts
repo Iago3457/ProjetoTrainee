@@ -40,7 +40,8 @@ export class AdminController {
     @UseGuards(AuthGuard)
     @Get('disciplinas')
     @ApiOperation({ summary: 'Listar todas as disciplinas com lotação' })
-    @ApiResponse({ status: 200, description: 'Lista de disciplinas.' })
+    @ApiResponse({ status: 200, description: 'Lista de disciplinas retornada com sucesso.' })
+    @ApiResponse({ status: 401, description: 'Não autorizado — token ausente, inválido ou usuário não é admin.' })
     async listarDisciplinas(@Request() req) {
         this.assertAdmin(req);
         return this.adminService.listarDisciplinas();
@@ -50,7 +51,10 @@ export class AdminController {
     @Post('disciplinas')
     @ApiOperation({ summary: 'Criar uma nova disciplina' })
     @ApiBody({ type: CriarDisciplinaDto })
-    @ApiResponse({ status: 201, description: 'Disciplina criada.' })
+    @ApiResponse({ status: 201, description: 'Disciplina criada com sucesso.' })
+    @ApiResponse({ status: 400, description: 'Dados inválidos — falha na validação Zod (código, horários, créditos, etc.).' })
+    @ApiResponse({ status: 401, description: 'Não autorizado.' })
+    @ApiResponse({ status: 409, description: 'Conflito — já existe uma disciplina com este código.' })
     @UsePipes(new ZodValidationPipe(criarDisciplinaSchema))
     async criarDisciplina(@Request() req, @Body() body: CriarDisciplinaDto) {
         this.assertAdmin(req);
@@ -60,9 +64,12 @@ export class AdminController {
     @UseGuards(AuthGuard)
     @Put('disciplinas/:id')
     @ApiOperation({ summary: 'Atualizar uma disciplina existente' })
-    @ApiParam({ name: 'id', description: 'ID da disciplina' })
+    @ApiParam({ name: 'id', description: 'ID (UUID) da disciplina' })
     @ApiBody({ type: AtualizarDisciplinaDto })
-    @ApiResponse({ status: 200, description: 'Disciplina atualizada.' })
+    @ApiResponse({ status: 200, description: 'Disciplina atualizada com sucesso.' })
+    @ApiResponse({ status: 400, description: 'Dados inválidos — falha na validação Zod ou pré-requisito inexistente.' })
+    @ApiResponse({ status: 401, description: 'Não autorizado.' })
+    @ApiResponse({ status: 404, description: 'Disciplina não encontrada.' })
     async atualizarDisciplina(
         @Request() req,
         @Param('id') id: string,
@@ -75,8 +82,11 @@ export class AdminController {
     @UseGuards(AuthGuard)
     @Delete('disciplinas/:id')
     @ApiOperation({ summary: 'Excluir uma disciplina' })
-    @ApiParam({ name: 'id', description: 'ID da disciplina' })
-    @ApiResponse({ status: 200, description: 'Disciplina excluída.' })
+    @ApiParam({ name: 'id', description: 'ID (UUID) da disciplina' })
+    @ApiResponse({ status: 200, description: 'Disciplina excluída com sucesso.' })
+    @ApiResponse({ status: 400, description: 'Não é possível excluir — possui matrículas ativas ou é pré-requisito de outras.' })
+    @ApiResponse({ status: 401, description: 'Não autorizado.' })
+    @ApiResponse({ status: 404, description: 'Disciplina não encontrada.' })
     async excluirDisciplina(@Request() req, @Param('id') id: string) {
         this.assertAdmin(req);
         return this.adminService.excluirDisciplina(id);
@@ -87,7 +97,8 @@ export class AdminController {
     @UseGuards(AuthGuard)
     @Get('matriculas/pendentes')
     @ApiOperation({ summary: 'Listar matrículas pendentes de aprovação' })
-    @ApiResponse({ status: 200, description: 'Lista de matrículas pendentes.' })
+    @ApiResponse({ status: 200, description: 'Lista de matrículas pendentes retornada com sucesso.' })
+    @ApiResponse({ status: 401, description: 'Não autorizado.' })
     async listarPendentes(@Request() req) {
         this.assertAdmin(req);
         return this.adminService.listarMatriculasPendentes();
@@ -96,8 +107,11 @@ export class AdminController {
     @UseGuards(AuthGuard)
     @Put('matriculas/:id/aprovar')
     @ApiOperation({ summary: 'Aprovar uma matrícula requisitada' })
-    @ApiParam({ name: 'id', description: 'ID da matrícula' })
-    @ApiResponse({ status: 200, description: 'Matrícula aprovada.' })
+    @ApiParam({ name: 'id', description: 'ID (UUID) da matrícula' })
+    @ApiResponse({ status: 200, description: 'Matrícula aprovada com sucesso.' })
+    @ApiResponse({ status: 400, description: 'Matrícula não está pendente de aprovação.' })
+    @ApiResponse({ status: 401, description: 'Não autorizado.' })
+    @ApiResponse({ status: 404, description: 'Matrícula não encontrada.' })
     async aprovarMatricula(@Request() req, @Param('id') id: string) {
         this.assertAdmin(req);
         return this.adminService.aprovarMatricula(id);
@@ -106,8 +120,11 @@ export class AdminController {
     @UseGuards(AuthGuard)
     @Put('matriculas/:id/rejeitar')
     @ApiOperation({ summary: 'Rejeitar uma matrícula requisitada' })
-    @ApiParam({ name: 'id', description: 'ID da matrícula' })
-    @ApiResponse({ status: 200, description: 'Matrícula rejeitada.' })
+    @ApiParam({ name: 'id', description: 'ID (UUID) da matrícula' })
+    @ApiResponse({ status: 200, description: 'Matrícula rejeitada com sucesso.' })
+    @ApiResponse({ status: 400, description: 'Matrícula não está pendente de aprovação.' })
+    @ApiResponse({ status: 401, description: 'Não autorizado.' })
+    @ApiResponse({ status: 404, description: 'Matrícula não encontrada.' })
     async rejeitarMatricula(@Request() req, @Param('id') id: string) {
         this.assertAdmin(req);
         return this.adminService.rejeitarMatricula(id);
