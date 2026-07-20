@@ -4,6 +4,7 @@ import { adminService, AdminDisciplina, MatriculaPendente } from '../services/ad
 import { GraduationCapIcon, SearchIcon, PlusIcon, EditIcon, TrashIcon, LogOutIcon, CheckCircleIcon, XCircleIcon, UsersIcon } from '../assets/icons'
 import AdminDisciplinaModal from '../components/AdminDisciplinaModal'
 import AdminAlunosModal from '../components/AdminAlunosModal'
+import AdminGestaoSemestre from '../components/AdminGestaoSemestre'
 import { toast } from 'react-hot-toast'
 import { formatHorarios } from '../utils/horarioFormatter'
 
@@ -12,7 +13,7 @@ interface AdminDashboardPageProps {
 }
 
 export default function AdminDashboardPage({ onNavigate }: AdminDashboardPageProps) {
-  const [activeTab, setActiveTab] = useState<'catalogo' | 'aprovacoes'>('catalogo')
+  const [activeTab, setActiveTab] = useState<'catalogo' | 'aprovacoes' | 'gestao'>('catalogo')
   const [disciplinas, setDisciplinas] = useState<AdminDisciplina[]>([])
   const [pendentes, setPendentes] = useState<MatriculaPendente[]>([])
   const [search, setSearch] = useState('')
@@ -174,6 +175,16 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
                 </span>
               )}
             </button>
+            <button 
+              onClick={() => setActiveTab('gestao')}
+              className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'gestao' 
+                  ? 'border-brand-primary text-white' 
+                  : 'border-transparent text-[#9794A8] hover:text-[#B0ADC0]'
+              }`}
+            >
+              Gestão de Semestre
+            </button>
           </div>
         </div>
       </header>
@@ -182,9 +193,11 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <h2 className="text-xl font-bold text-white">
-            {activeTab === 'catalogo' ? 'Disciplinas do Catálogo' : 'Aprovações Pendentes'}
-          </h2>
+          {activeTab !== 'gestao' && (
+            <h2 className="text-xl font-bold text-white">
+              {activeTab === 'catalogo' ? 'Disciplinas do Catálogo' : 'Aprovações Pendentes'}
+            </h2>
+          )}
           {activeTab === 'catalogo' && (
             <button 
               onClick={handleNovaDisciplina}
@@ -197,6 +210,7 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
         </div>
 
         {/* Toolbar */}
+        {activeTab !== 'gestao' && (
         <div className="bg-[#1A1929] border border-[#2A2940] rounded-t-xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between">
           <div className="relative w-full sm:max-w-md">
             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555367] w-4 h-4" />
@@ -215,8 +229,12 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
             }
           </div>
         </div>
+        )}
 
         {/* Content Area */}
+        {activeTab === 'gestao' ? (
+          <AdminGestaoSemestre />
+        ) : (
         <div className="bg-[#1A1929] border-x border-b border-[#2A2940] rounded-b-xl overflow-x-auto">
           {loading ? (
             <div className="p-12 text-center text-[#9794A8]">Carregando dados...</div>
@@ -366,6 +384,7 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
             </table>
           )}
         </div>
+        )}
 
       </main>
 

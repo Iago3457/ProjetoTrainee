@@ -24,6 +24,15 @@ export interface MatriculaPendente {
     disciplina: { id: string; codigo: string; nome: string };
 }
 
+export interface AlunoMatriculaSemestre {
+    disciplina: { id: string; codigo: string; nome: string };
+    matriculas: {
+        matriculaId: string;
+        status: string;
+        aluno: { id: string; nome: string; email: string; ra: string };
+    }[];
+}
+
 export const adminService = {
     login: async (email: string, senha: string) => {
         const response = await api.post('/auth/admin/login', { email, senha });
@@ -73,6 +82,29 @@ export const adminService = {
 
     rejeitarMatricula: async (id: string) => {
         const response = await api.put(`/admin/matriculas/${id}/rejeitar`);
+        return response.data;
+    },
+
+    obterSemestreAtual: async (): Promise<{ ano: number; semestre: number }> => {
+        const response = await api.get('/admin/semestre/atual');
+        return response.data;
+    },
+
+    listarAlunosMatriculas: async (ano?: number, semestre?: number): Promise<AlunoMatriculaSemestre[]> => {
+        const params = new URLSearchParams();
+        if (ano) params.append('ano', ano.toString());
+        if (semestre) params.append('semestre', semestre.toString());
+        const response = await api.get(`/admin/alunos/matriculas?${params.toString()}`);
+        return response.data;
+    },
+
+    definirStatusMatriculas: async (matriculas: { matriculaId: string; status: string }[]) => {
+        const response = await api.put('/admin/matriculas/definir-status', { matriculas });
+        return response.data;
+    },
+
+    avancarSemestre: async () => {
+        const response = await api.post('/admin/semestre/avancar');
         return response.data;
     },
 };
