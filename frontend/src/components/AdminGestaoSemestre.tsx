@@ -179,6 +179,9 @@ export default function AdminGestaoSemestre() {
                                                                 onChange={(e) => handleStatusChange(m.matriculaId, e.target.value)}
                                                                 className="bg-[#12111E] border border-[#2A2940] text-white text-sm rounded-lg p-2 outline-none focus:border-brand-primary"
                                                             >
+                                                                {currentStatus === 'requisitada' && (
+                                                                    <option value="requisitada" disabled>Pendente de Aprovação</option>
+                                                                )}
                                                                 <option value="inscrito">Inscrito (Sem Nota)</option>
                                                                 <option value="aprovado">Aprovado</option>
                                                                 <option value="reprovado">Reprovado</option>
@@ -196,16 +199,16 @@ export default function AdminGestaoSemestre() {
                 )}
             </div>
 
-            <ConfirmModal
-                isOpen={isAvançarModalOpen}
-                onClose={() => setIsAvançarModalOpen(false)}
-                onConfirm={handleAvancarSemestre}
-                title="Avançar Semestre"
-                message={mensagemAviso}
-                confirmText={temPendencias ? 'Sim, reprovar e avançar' : 'Sim, avançar semestre'}
-                cancelText="Cancelar"
-                isDestructive={temPendencias}
-            />
+            {isAvançarModalOpen && (
+                <ConfirmModal
+                    onCancel={() => setIsAvançarModalOpen(false)}
+                    onConfirm={handleAvancarSemestre}
+                    title="Avançar Semestre"
+                    message={mensagemAviso}
+                    confirmText={temPendencias ? 'Sim, reprovar e avançar' : 'Sim, avançar semestre'}
+                    cancelText="Cancelar"
+                />
+            )}
         </div>
     );
 }
