@@ -70,6 +70,13 @@ export const atualizarDisciplinaSchema = z.object({
     preRequisitoId: z.string().uuid().optional().nullable(),
 });
 
+export const definirStatusSchema = z.object({
+    matriculas: z.array(z.object({
+        matriculaId: z.string().uuid({ error: 'matriculaId deve ser UUID' }),
+        status: z.enum(['aprovado', 'reprovado', 'inscrito'], { error: 'status inválido' }),
+    })).min(1, { error: 'Forneça pelo menos uma matrícula' }),
+});
+
 // ── Swagger DTOs ──
 
 class HorarioDto {
@@ -142,4 +149,17 @@ export class AtualizarDisciplinaDto {
 
     @ApiPropertyOptional({ example: null, description: 'ID do novo pré-requisito (null para remover)' })
     preRequisitoId?: string | null;
+}
+
+class MatriculaStatusDto {
+    @ApiProperty({ example: 'uuid-da-matricula', description: 'ID (UUID) da matrícula' })
+    matriculaId!: string;
+
+    @ApiProperty({ example: 'aprovado', description: 'Novo status da matrícula', enum: ['aprovado', 'reprovado', 'inscrito'] })
+    status!: string;
+}
+
+export class DefinirStatusDto {
+    @ApiProperty({ type: [MatriculaStatusDto], description: 'Lista de matrículas para atualizar status' })
+    matriculas!: MatriculaStatusDto[];
 }
