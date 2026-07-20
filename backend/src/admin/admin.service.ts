@@ -8,8 +8,7 @@ export class AdminService {
     // ==================== DISCIPLINAS ====================
 
     async listarDisciplinas() {
-        const semestreAtual = 1;
-        const anoAtual = 2026;
+        const { semestre: semestreAtual, ano: anoAtual } = await this.prisma.getSemestreAtual();
 
         const disciplinas = await this.prisma.disciplina.findMany({
             include: {
@@ -202,5 +201,116 @@ export class AdminService {
             where: { id: matriculaId },
             data: { status: 'rejeitada' },
         });
+    }
+
+    // ==================== GESTÃO DE SEMESTRE ====================
+
+    async obterSemestreAtual() {
+        return this.prisma.getSemestreAtual();
+    }
+
+    async listarMatriculasSemestre(anoQuery?: number, semestreQuery?: number) {
+        const config = await this.prisma.getSemestreAtual();
+        const ano = anoQuery || config.ano;
+        const semestre = semestreQuery || config.semestre;
+
+        const matriculas = await this.prisma.matricula.findMany({
+            where: { ano, semestre, status: { not: 'rejeitada' } }, // não traz as rejeitadas
+            include: {
+                aluno: { select: { id: true, nome: true, email: true, ra: true } },
+                disciplina: { select: { id: true, codigo: true, nome: true } },
+            },
+            orderBy: { aluno: { nome: 'asc' } },
+        });
+
+        // Agrupar por disciplina para facilitar o frontend
+        const porDisciplina = new Map<string, any>();
+
+        for (const m of matriculas) {
+            if (!porDisciplina.has(m.disciplina.id)) {
+                porDisciplina.set(m.disciplina.id, {
+                    disciplina: m.disciplina,
+                    matriculas: [],
+                });
+            }
+            porDisciplina.get(m.disciplina.id).matriculas.push({
+                matriculaId: m.id,
+                status: m.status,
+                aluno: m.aluno,
+            });
+        }
+
+        return Array.from(porDisciplina.values());
+    }
+
+    async definirStatusMatriculas(matriculas: { matriculaId: string; status: string }[]) {
+        // Como o SQLite/Prisma não suporta updateMany com múltiplos valores diferentes fácil, 
+        // fazemos um update em loop ou $transaction
+        const operations = matriculas.map((m) =>
+            this.prisma.matricula.update({
+                where: { id: m.matriculaId },
+                data: { status: m.status },
+            })
+        );
+
+        await this.prisma.$transaction(operations);
+
+        return { mensagem: 'Status atualizados com sucesso.' };
+    }
+
+    async avancarSemestre() {
+        const { ano, semestre } = await this.prisma.getSemestreAtual();
+
+        // 1. Marcar matrículas "inscrito" ou "requisitada" como "reprovado"
+        await this.prisma.matricula.updateMany({
+            where: {
+                ano,
+                semestre,
+                status: { in: ['inscrito', 'requisitada'] }
+            },
+            data: {
+                status: 'reprovado'
+            }
+        });
+
+        // 2. Calcular o próximo semestre
+        let proxAno = ano;
+        let proxSemestre = semestre;
+
+        if (semestre === 1) {
+            proxSemestre = 2;
+        } else {
+            proxSemestre = 1;
+            proxAno += 1;
+        }
+
+        // Obter todos os alunos para avançar o período (que é String no banco)
+        const alunos = await this.prisma.aluno.findMany();
+        const updateAlunos = alunos.map(aluno => {
+            const currentPeriodo = parseInt(aluno.periodo, 10);
+            const nextPeriodo = isNaN(currentPeriodo) ? aluno.periodo : (currentPeriodo + 1).toString();
+            return this.prisma.aluno.update({
+                where: { id: aluno.id },
+                data: { periodo: nextPeriodo }
+            });
+        });
+
+        // 3. Atualizar configurações no banco
+        await this.prisma.$transaction([
+            this.prisma.config.update({
+                where: { chave: 'anoAtual' },
+                data: { valor: proxAno.toString() }
+            }),
+            this.prisma.config.update({
+                where: { chave: 'semestreAtual' },
+                data: { valor: proxSemestre.toString() }
+            }),
+            ...updateAlunos
+        ]);
+
+        return {
+            mensagem: 'Semestre avançado com sucesso!',
+            novoSemestre: { ano: proxAno, semestre: proxSemestre }
+        };
     }
 }

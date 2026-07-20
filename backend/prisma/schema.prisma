@@ -89,3 +89,12 @@ model Horario {
   disciplinaId String
   disciplina Disciplina @relation(fields: [disciplinaId], references: [id], onDelete: Cascade)
 }
+
+model Config {
+  id String @id @default(uuid())
+  chave String @unique
+  valor String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -7,8 +7,7 @@ export class MatriculasService {
     constructor(private readonly prisma: PrismaService) {}
 
     async inscrever(alunoId: string, disciplinaId: string) {
-        const anoAtual = new Date().getFullYear();
-        const semestreAtual = 1;
+        const { ano: anoAtual, semestre: semestreAtual } = await this.prisma.getSemestreAtual();
 
         const disciplinaAlvo = await this.prisma.disciplina.findUnique({
             where: { id: disciplinaId },
@@ -78,8 +77,7 @@ export class MatriculasService {
     }
 
     async listarMinhasMatriculas(alunoId: string, queryAno?: number, querySemestre?: number) {
-        const anoAtual = new Date().getFullYear();
-        const semestreAtual = 1;
+        const { ano: anoAtual, semestre: semestreAtual } = await this.prisma.getSemestreAtual();
 
         const ano = queryAno || anoAtual;
         const semestre = querySemestre || semestreAtual;
@@ -136,8 +134,7 @@ export class MatriculasService {
         if (matricula.status !== 'inscrito' && matricula.status !== 'requisitada') {
             throw new BadRequestException('Somente matrículas com status "inscrito" ou "requisitada" podem ser canceladas');
         }
-        const anoAtual = new Date().getFullYear();
-        const semestreAtual = 1;
+        const { ano: anoAtual, semestre: semestreAtual } = await this.prisma.getSemestreAtual();
 
         if (matricula.ano !== anoAtual || matricula.semestre !== semestreAtual) {
             throw new BadRequestException('Somente matrículas do semestre atual podem ser canceladas');
