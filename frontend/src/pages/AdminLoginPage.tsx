@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { GraduationCapIcon, EmailIcon, LockIcon, ArrowRightIcon } from '../assets/icons'
-import InputField from '../components/InputField'
 import { Page } from '../types'
 import { adminService } from '../services/admin.service'
 
