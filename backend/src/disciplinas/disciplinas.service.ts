@@ -6,8 +6,7 @@ export class DisciplinasService {
     constructor(private readonly prisma: PrismaService) {}
 
     async listarCatalogo(alunoId: string) {
-        const semestreAtual = 1;
-        const anoAtual = 2026;
+        const { ano: anoAtual, semestre: semestreAtual } = await this.prisma.getSemestreAtual();
 
         const disciplinas = await this.prisma.disciplina.findMany({
             include: {
@@ -100,8 +99,7 @@ export class DisciplinasService {
     }
 
     async buscarDetalhes(disciplinaId: string, alunoId: string) {
-        const semestreAtual = 1;
-        const anoAtual = 2026;
+        const { ano: anoAtual, semestre: semestreAtual } = await this.prisma.getSemestreAtual();
 
         const disciplina = await this.prisma.disciplina.findUnique({
             where: { id: disciplinaId },

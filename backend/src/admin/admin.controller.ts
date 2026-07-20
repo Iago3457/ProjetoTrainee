@@ -17,9 +17,12 @@ import { ZodValidationPipe } from '../auth/zod-validation.pipe';
 import {
     criarDisciplinaSchema,
     atualizarDisciplinaSchema,
+    definirStatusSchema,
     CriarDisciplinaDto,
     AtualizarDisciplinaDto,
+    DefinirStatusDto,
 } from './dto/admin.schema';
+import { ApiQuery } from '@nestjs/swagger';
 
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiBody, ApiParam, ApiResponse } from '@nestjs/swagger';
 
@@ -128,5 +131,54 @@ export class AdminController {
     async rejeitarMatricula(@Request() req, @Param('id') id: string) {
         this.assertAdmin(req);
         return this.adminService.rejeitarMatricula(id);
+    }
+
+    // ==================== GESTÃO DE SEMESTRE ====================
+
+    @UseGuards(AuthGuard)
+    @Get('semestre/atual')
+    @ApiOperation({ summary: 'Obter a configuração de ano e semestre atual' })
+    @ApiResponse({ status: 200, description: 'Configuração retornada com sucesso.' })
+    @ApiResponse({ status: 401, description: 'Não autorizado.' })
+    async obterSemestreAtual(@Request() req) {
+        this.assertAdmin(req);
+        return this.adminService.obterSemestreAtual();
+    }
+
+    @UseGuards(AuthGuard)
+    @Get('alunos/matriculas')
+    @ApiOperation({ summary: 'Listar alunos e suas matrículas no semestre atual (ou outro)' })
+    @ApiQuery({ name: 'ano', required: false, type: Number })
+    @ApiQuery({ name: 'semestre', required: false, type: Number })
+    @ApiResponse({ status: 200, description: 'Matrículas retornadas com sucesso (agrupadas por disciplina).' })
+    @ApiResponse({ status: 401, description: 'Não autorizado.' })
+    async listarMatriculasSemestre(@Request() req, @Request() query) {
+        this.assertAdmin(req);
+        const ano = query.query?.ano ? parseInt(query.query.ano) : undefined;
+        const semestre = query.query?.semestre ? parseInt(query.query.semestre) : undefined;
+        return this.adminService.listarMatriculasSemestre(ano, semestre);
+    }
+
+    @UseGuards(AuthGuard)
+    @Put('matriculas/definir-status')
+    @ApiOperation({ summary: 'Definir status (aprovado/reprovado/inscrito) para múltiplas matrículas' })
+    @ApiBody({ type: DefinirStatusDto })
+    @ApiResponse({ status: 200, description: 'Status atualizados com sucesso.' })
+    @ApiResponse({ status: 400, description: 'Dados inválidos.' })
+    @ApiResponse({ status: 401, description: 'Não autorizado.' })
+    @UsePipes(new ZodValidationPipe(definirStatusSchema))
+    async definirStatusMatriculas(@Request() req, @Body() body: DefinirStatusDto) {
+        this.assertAdmin(req);
+        return this.adminService.definirStatusMatriculas(body.matriculas);
+    }
+
+    @UseGuards(AuthGuard)
+    @Post('semestre/avancar')
+    @ApiOperation({ summary: 'Avançar o sistema para o próximo semestre' })
+    @ApiResponse({ status: 200, description: 'Semestre avançado com sucesso.' })
+    @ApiResponse({ status: 401, description: 'Não autorizado.' })
+    async avancarSemestre(@Request() req) {
+        this.assertAdmin(req);
+        return this.adminService.avancarSemestre();
     }
 }
