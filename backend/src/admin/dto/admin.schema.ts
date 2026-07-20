@@ -23,24 +23,24 @@ const horarioSchema = z.object({
         error: 'Dia da semana inválido. Valores aceitos: Segunda, Terça, Quarta, Quinta, Sexta, Sábado',
     }),
     horarioInicio: z.string().regex(HORARIO_REGEX, {
-        message: 'horarioInicio deve estar no formato HH:MM (ex: 08:00)',
+        error: 'horarioInicio deve estar no formato HH:MM (ex: 08:00)',
     }),
     horarioFim: z.string().regex(HORARIO_REGEX, {
-        message: 'horarioFim deve estar no formato HH:MM (ex: 10:00)',
+        error: 'horarioFim deve estar no formato HH:MM (ex: 10:00)',
     }),
 }).refine(
     (h) => timeToMinutes(h.horarioInicio) < timeToMinutes(h.horarioFim),
-    { message: 'horarioInicio deve ser anterior a horarioFim' },
+    { error: 'horarioInicio deve ser anterior a horarioFim' },
 );
 
-// ── Schemas ──
+//--- Schemas ---
 
 export const criarDisciplinaSchema = z.object({
     codigo: z
         .string()
         .min(1, { error: 'Código é obrigatório' })
         .regex(/^[A-Z]{2,5}\d{3,4}$/, {
-            message: 'Código deve seguir o formato: 2–5 letras maiúsculas + 3–4 dígitos (ex: BCC099)',
+            error: 'Código deve seguir o formato: 2–5 letras maiúsculas + 3–4 dígitos (ex: BCC099)',
         }),
     nome: z.string().min(3, { error: 'Nome deve ter no mínimo 3 caracteres' }),
     descricao: z.string().optional(),
