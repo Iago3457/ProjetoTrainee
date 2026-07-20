@@ -13,7 +13,7 @@ export class DisciplinasController {
     @UseGuards(AuthGuard)
     @Get()
     @ApiOperation({ summary: 'Listar o catálogo de disciplinas disponíveis' })
-    @ApiQuery({ name: 'alunoId', required: true, description: 'ID do aluno logado' })
+    @ApiQuery({ name: 'alunoId', required: true, description: 'ID (UUID) do aluno logado' })
     @ApiResponse({ status: 200, description: 'Catálogo retornado com sucesso.' })
     @ApiResponse({ status: 401, description: 'Não autorizado.' })
     async getDisciplinas(@Query('alunoId') alunoIdQuery: string) {
@@ -27,8 +27,9 @@ export class DisciplinasController {
     @UseGuards(AuthGuard)
     @Get(':id')
     @ApiOperation({ summary: 'Buscar detalhes de uma disciplina' })
-    @ApiParam({ name: 'id', description: 'ID da disciplina' })
+    @ApiParam({ name: 'id', description: 'ID (UUID) da disciplina' })
     @ApiResponse({ status: 200, description: 'Detalhes retornados com sucesso.' })
+    @ApiResponse({ status: 401, description: 'Não autorizado.' })
     @ApiResponse({ status: 404, description: 'Disciplina não encontrada.' })
     async getDetalhes(@Param('id') id: string, @Request() req) {
         const alunoId = req.user.sub;
