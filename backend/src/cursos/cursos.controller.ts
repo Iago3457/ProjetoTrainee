@@ -9,27 +9,14 @@ import {
     UseGuards,
     Request,
     UnauthorizedException,
+    UsePipes,
 } from '@nestjs/common';
 import { CursosService } from './cursos.service';
 import { AuthGuard } from '../auth/auth.guard';
+import { ZodValidationPipe } from '../auth/zod-validation.pipe';
+import { CriarCursoDto, AtualizarCursoDto, criarCursoSchema, atualizarCursoSchema } from './dto/cursos.schema';
 
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiBody, ApiParam, ApiResponse, ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-
-class CriarCursoDto {
-    @ApiProperty({ example: 'Bacharelado em Ciência da Computação', description: 'Nome do curso' })
-    nome!: string;
-
-    @ApiProperty({ example: 'BCC', description: 'Código único do curso' })
-    codigo!: string;
-}
-
-class AtualizarCursoDto {
-    @ApiPropertyOptional({ example: 'Bacharelado em Sistemas de Informação', description: 'Novo nome do curso' })
-    nome?: string;
-
-    @ApiPropertyOptional({ example: 'BSI', description: 'Novo código do curso' })
-    codigo?: string;
-}
 
 @ApiTags('Cursos')
 @Controller()
@@ -70,6 +57,7 @@ export class CursosController {
     @ApiResponse({ status: 201, description: 'Curso criado com sucesso.' })
     @ApiResponse({ status: 401, description: 'Não autorizado.' })
     @ApiResponse({ status: 409, description: 'Código de curso já existe.' })
+    @UsePipes(new ZodValidationPipe(criarCursoSchema))
     async criarCurso(@Request() req, @Body() body: CriarCursoDto) {
         this.assertAdmin(req);
         return this.cursosService.criarCurso(body);
@@ -84,6 +72,7 @@ export class CursosController {
     @ApiResponse({ status: 200, description: 'Curso atualizado com sucesso.' })
     @ApiResponse({ status: 401, description: 'Não autorizado.' })
     @ApiResponse({ status: 404, description: 'Curso não encontrado.' })
+    @UsePipes(new ZodValidationPipe(atualizarCursoSchema))
     async atualizarCurso(@Request() req, @Param('id') id: string, @Body() body: AtualizarCursoDto) {
         this.assertAdmin(req);
         return this.cursosService.atualizarCurso(id, body);
