@@ -41,7 +41,7 @@ export default function EnrollButton({ status, onClick, isLoading }: EnrollButto
     );
   }
 
-  // Estado: Disponível
+
   return (
     <button onClick={(e) => { e.stopPropagation(); onClick?.(); }} disabled={isLoading} className={`${baseClasses} bg-brand-primary text-white hover:bg-brand-accent ${isLoading ? 'opacity-70 cursor-wait' : ''} active:scale-[0.98]`}>
       {isLoading ? 'Processando...' : 'Inscrever-se'}

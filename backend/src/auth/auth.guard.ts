@@ -15,12 +15,9 @@ export class AuthGuard implements CanActivate {
     }
     
     try {
-      // Verifica se o token é válido usando a chave secreta
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.JWT_SECRET,
-      });
-      // Injeta os dados do usuário (o payload que você criou no login) na requisição
-      request['user'] = payload;
+        secret: process.env.JWT_SECRET || 'secretKey',
+      });      request['user'] = payload;
     } catch {
       throw new UnauthorizedException('Token inválido ou expirado.');
     }

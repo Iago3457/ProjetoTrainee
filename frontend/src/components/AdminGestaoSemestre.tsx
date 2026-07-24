@@ -10,7 +10,7 @@ export default function AdminGestaoSemestre() {
     const [semestre, setSemestre] = useState<number>(1);
     const [disciplinas, setDisciplinas] = useState<AlunoMatriculaSemestre[]>([]);
     
-    // Matrículas com status alterado antes de salvar
+
     const [mudancasStatus, setMudancasStatus] = useState<Record<string, string>>({});
 
     const [isAvançarModalOpen, setIsAvançarModalOpen] = useState(false);
@@ -65,8 +65,7 @@ export default function AdminGestaoSemestre() {
     };
 
     const verificarPendenciasEAbrirModal = () => {
-        // Verifica se ainda existe alguma matrícula 'inscrito' ou 'requisitada' 
-        // levando em conta o estado local que ainda não foi salvo
+        // Validar pendências locais e não salvas
         let pendentes = false;
 
         for (const d of disciplinas) {

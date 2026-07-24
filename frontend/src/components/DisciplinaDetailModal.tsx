@@ -35,7 +35,7 @@ export default function DisciplinaDetailModal({ disciplinaId, onClose, onInscric
     loadDetalhes();
   }, [disciplinaId]);
 
-  // Handle escape key
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -44,7 +44,7 @@ export default function DisciplinaDetailModal({ disciplinaId, onClose, onInscric
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
 
-  // Handle click outside
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {

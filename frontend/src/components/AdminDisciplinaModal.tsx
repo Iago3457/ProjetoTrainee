@@ -112,7 +112,6 @@ export default function AdminDisciplinaModal({
     try {
       const dataToSave = { ...formData };
       
-      // Clean up empty strings for optional fields
       if (!dataToSave.descricao) delete (dataToSave as any).descricao;
       if (!dataToSave.professor) delete (dataToSave as any).professor;
       if (!dataToSave.departamento) delete (dataToSave as any).departamento;

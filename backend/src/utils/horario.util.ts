@@ -20,7 +20,7 @@ export function checkTimeConflict(horarios1: HorarioEstruturado[], horarios2: Ho
             const start2 = timeToMinutes(h2.horarioInicio);
             const end2 = timeToMinutes(h2.horarioFim);
 
-            // Verifica se há sobreposição (start1 < end2 && start2 < end1)
+            // Verificar sobreposição
             if (start1 < end2 && start2 < end1) {
                 return true;
             }

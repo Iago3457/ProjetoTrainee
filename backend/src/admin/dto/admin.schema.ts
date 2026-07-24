@@ -2,21 +2,16 @@ import { z } from 'zod';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 // ── Constantes ──
-
 const DIAS_SEMANA = [
     'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado',
 ] as const;
 
 const HORARIO_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
 
-// ── Helpers ──
-
 function timeToMinutes(time: string): number {
     const [h, m] = time.split(':').map(Number);
     return h * 60 + m;
 }
-
-// ── Sub-schemas ──
 
 const horarioSchema = z.object({
     diaSemana: z.enum(DIAS_SEMANA, {
@@ -32,8 +27,6 @@ const horarioSchema = z.object({
     (h) => timeToMinutes(h.horarioInicio) < timeToMinutes(h.horarioFim),
     { error: 'horarioInicio deve ser anterior a horarioFim' },
 );
-
-//--- Schemas ---
 
 export const criarDisciplinaSchema = z.object({
     codigo: z
@@ -78,8 +71,6 @@ export const definirStatusSchema = z.object({
         status: z.enum(['aprovado', 'reprovado', 'inscrito'], { error: 'status inválido' }),
     })).min(1, { error: 'Forneça pelo menos uma matrícula' }),
 });
-
-// ── Swagger DTOs ──
 
 class HorarioDto {
     @ApiProperty({ example: 'Segunda', description: 'Dia da semana', enum: ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'] })

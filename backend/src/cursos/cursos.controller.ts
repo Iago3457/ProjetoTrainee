@@ -29,7 +29,6 @@ export class CursosController {
         }
     }
 
-    // Endpoint público para listagem de cursos (usado no signup)
     @Get('cursos')
     @ApiOperation({ summary: 'Listar cursos disponíveis (público)' })
     @ApiResponse({ status: 200, description: 'Lista de cursos retornada com sucesso.' })
@@ -37,7 +36,6 @@ export class CursosController {
         return this.cursosService.listarCursosPublico();
     }
 
-    // Endpoints admin
     @UseGuards(AuthGuard)
     @Get('admin/cursos')
     @ApiBearerAuth()

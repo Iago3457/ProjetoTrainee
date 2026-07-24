@@ -19,7 +19,6 @@ export class DisciplinasService {
             }
         });
 
-        // Buscar o cursoId do aluno
         const aluno = await this.prisma.aluno.findUnique({
             where: { id: alunoId },
             select: { cursoId: true },
@@ -29,7 +28,6 @@ export class DisciplinasService {
             where: { alunoId: alunoId }
         });
 
-        // Calcula quantos créditos já foram utilizados neste semestre
         const matriculasAtuais = historicoAluno.filter(
             (m) => (m.status === 'inscrito' || m.status === 'requisitada') && m.semestre === semestreAtual && m.ano === anoAtual
         );
@@ -98,7 +96,7 @@ export class DisciplinasService {
                 cursos: disciplina.cursos,
                 doCursoDoAluno: aluno?.cursoId
                     ? disciplina.cursos.some(c => c.id === aluno.cursoId)
-                    : true, // Se aluno não tem curso, mostra tudo
+                    : true,
             };
         });
 
@@ -128,7 +126,6 @@ export class DisciplinasService {
             throw new NotFoundException('Disciplina não encontrada');
         }
 
-        // Buscar a cadeia completa de pré-requisitos
         const preRequisitos: { codigo: string; nome: string; atendido: boolean }[] = [];
         let currentDisc = disciplina;
 
@@ -157,7 +154,6 @@ export class DisciplinasService {
             currentDisc = preReq as typeof currentDisc;
         }
 
-        // Status do aluno
         const matriculaAtual = await this.prisma.matricula.findFirst({
             where: {
                 alunoId,
