@@ -36,6 +36,13 @@ async function main() {
         },
     });
 
+    const cursoENC = await prisma.curso.create({
+        data: {
+            nome: 'Engenharia de Computação',
+            codigo: 'ENC',
+        },
+    });
+
     // ============================================================
     // 1º SEMESTRE — Disciplinas (sem pré-requisitos)
     // ============================================================
@@ -523,6 +530,91 @@ async function main() {
             cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 4,
+        },
+    });
+
+    // ============================================================
+    // DISCIPLINAS — Engenharia de Computação
+    // ============================================================
+    console.log('📚 Criando disciplinas do curso de Engenharia de Computação...');
+
+    const circLog = await prisma.disciplina.create({
+        data: {
+            codigo: 'ENC001',
+            nome: 'Circuitos Lógicos',
+            descricao: 'Estudo de portas lógicas, circuitos combinacionais e sequenciais, máquinas de estado.',
+            professor: 'Prof. Dr. Roberto Silva',
+            creditos: 4,
+            vagas: 40,
+            horarios: {
+                create: [
+                        { diaSemana: 'Segunda', horarioInicio: '08:00', horarioFim: '10:00' },
+                        { diaSemana: 'Quarta', horarioInicio: '08:00', horarioFim: '10:00' }
+                ]
+            },
+            cursos: { connect: [{ id: cursoENC.id }] },
+            departamento: 'DEE',
+            periodoIdeal: 1,
+        },
+    });
+
+    const sinalSistemas = await prisma.disciplina.create({
+        data: {
+            codigo: 'ENC002',
+            nome: 'Sinais e Sistemas',
+            descricao: 'Análise de sinais no domínio do tempo e frequência, transformadas de Fourier e Laplace.',
+            professor: 'Profa. Dra. Ana Mendes',
+            creditos: 4,
+            vagas: 40,
+            horarios: {
+                create: [
+                        { diaSemana: 'Terça', horarioInicio: '10:00', horarioFim: '12:00' },
+                        { diaSemana: 'Quinta', horarioInicio: '10:00', horarioFim: '12:00' }
+                ]
+            },
+            cursos: { connect: [{ id: cursoENC.id }] },
+            departamento: 'DEE',
+            periodoIdeal: 2,
+        },
+    });
+
+    const fisica1 = await prisma.disciplina.create({
+        data: {
+            codigo: 'FIS001',
+            nome: 'Física I',
+            descricao: 'Mecânica clássica, cinemática, leis de Newton, trabalho e energia.',
+            professor: 'Prof. Dr. Carlos Souza',
+            creditos: 4,
+            vagas: 40,
+            horarios: {
+                create: [
+                        { diaSemana: 'Segunda', horarioInicio: '14:00', horarioFim: '16:00' },
+                        { diaSemana: 'Quarta', horarioInicio: '14:00', horarioFim: '16:00' }
+                ]
+            },
+            cursos: { connect: [{ id: cursoENC.id }] },
+            departamento: 'DF',
+            periodoIdeal: 1,
+        },
+    });
+
+    const redesAvancadas = await prisma.disciplina.create({
+        data: {
+            codigo: 'ENC003',
+            nome: 'Redes de Computadores Avançadas',
+            descricao: 'Protocolos de roteamento, redes sem fio, segurança em redes.',
+            professor: 'Prof. Dr. João Pedro',
+            creditos: 4,
+            vagas: 40,
+            horarios: {
+                create: [
+                        { diaSemana: 'Terça', horarioInicio: '14:00', horarioFim: '16:00' },
+                        { diaSemana: 'Quinta', horarioInicio: '14:00', horarioFim: '16:00' }
+                ]
+            },
+            cursos: { connect: [{ id: cursoENC.id }] },
+            departamento: 'DC',
+            periodoIdeal: 3,
         },
     });
 
