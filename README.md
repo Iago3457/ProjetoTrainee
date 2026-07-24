@@ -3,6 +3,7 @@
 Sistema de matrícula acadêmica desenvolvido como projeto de capacitação para trainees da **CATI Jr**. 
 O sistema abrange o processo completo de gestão acadêmica: alunos podem se cadastrar, visualizar suas matrículas, catálogo de disciplinas e progresso no curso. Administradores podem gerenciar cursos, matérias, requisitos e horários.
 
+O site pode ser acessado [aqui](https://matriculafacil.onrender.com)
 ## Arquitetura do Projeto
 
 O repositório está dividido em dois serviços principais:
