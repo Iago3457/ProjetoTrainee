@@ -1,8 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { GraduationCapIcon, EyeOffIcon } from '../assets/icons'
 import InputField from './InputField'
 import { Page } from '../types'
 import { toast } from 'react-hot-toast'
+
+interface CursoOption {
+  id: string
+  nome: string
+  codigo: string
+}
 
 interface SignupCardProps {
   onNavigate?: (page: Page) => void
@@ -15,8 +21,28 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [confirmarSenha, setConfirmarSenha] = useState('')
+  const [cursoId, setCursoId] = useState('')
+  const [cursos, setCursos] = useState<CursoOption[]>([])
   const [erro, setErro] = useState('')
   const [carregando, setCarregando] = useState(false)
+
+  useEffect(() => {
+    async function fetchCursos() {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/cursos`)
+        if (response.ok) {
+          const data = await response.json()
+          setCursos(data)
+          if (data.length === 1) {
+            setCursoId(data[0].id)
+          }
+        }
+      } catch {
+        // Silently fail — cursos dropdown will just be empty
+      }
+    }
+    fetchCursos()
+  }, [])
 
    async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -29,12 +55,17 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
     setCarregando(true)
 
     try {
+      const payload: Record<string, string> = { nome, email, senha }
+      if (cursoId) {
+        payload.cursoId = cursoId
+      }
+
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000'}/auth/cadastro`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ nome, email, senha }),
+        body: JSON.stringify(payload),
       })
 
       const data = await response.json()
@@ -103,6 +134,24 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+
+        {cursos.length > 0 && (
+          <div className="flex flex-col gap-1.5">
+            <label className="font-medium text-sm text-ui-dark">Curso</label>
+            <select
+              value={cursoId}
+              onChange={(e) => setCursoId(e.target.value)}
+              className="w-full border border-[rgba(199,196,216,0.4)] rounded-lg px-3 py-[14px] bg-white text-ui-dark text-sm focus:border-brand-accent focus:ring-1 focus:ring-brand-accent/20 outline-none transition-all appearance-none cursor-pointer"
+            >
+              <option value="">Selecione seu curso</option>
+              {cursos.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.codigo} — {c.nome}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <InputField
           label="Senha"

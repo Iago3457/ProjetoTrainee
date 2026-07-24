@@ -15,7 +15,7 @@ export interface UserProfile {
     ra: string;
     periodo: string;
     semestre: string;
-    curso: string | null;
+    curso: { id: string; nome: string; codigo: string } | null;
     avatar: string | null;
 }
 
