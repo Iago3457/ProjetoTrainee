@@ -29,6 +29,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const [enrolling, setEnrollingId] = useState<string | null>(null);
   const [showConcluidas, setShowConcluidas] = useState(false);
   const [showIndisponiveis, setShowIndisponiveis] = useState(false);
+  const [showOutrosCursos, setShowOutrosCursos] = useState(false);
   const [selectedDisciplinaId, setSelectedDisciplinaId] = useState<string | null>(null);
 
   const carregarDados = async () => {
@@ -44,7 +45,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
         name: perfil.nome,
         email: perfil.email,
         matricula: perfil.ra,
-        curso: perfil.curso || 'Ciência da Computação',
+        curso: perfil.curso?.nome || 'Ciência da Computação',
         periodo: perfil.periodo,
         semestre: perfil.semestre,
         password: '',
@@ -117,6 +118,7 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
   const filteredDisciplinas = disciplinas.filter((d) => {
     if (!showConcluidas && d.statusInscricao === 'concluido') return false;
     if (!showIndisponiveis && d.statusInscricao === 'indisponivel') return false;
+    if (!showOutrosCursos && d.doCursoDoAluno === false) return false;
 
     // Filter by period
     if (filtroPeriodo && filtroPeriodo !== 'todos') {
@@ -214,6 +216,15 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
                   className="w-4 h-4 rounded border-ui-border text-brand-primary focus:ring-brand-primary"
                 />
                 Mostrar matérias indisponíveis
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer hover:text-ui-dark transition-colors">
+                <input 
+                  type="checkbox" 
+                  checked={showOutrosCursos} 
+                  onChange={(e) => setShowOutrosCursos(e.target.checked)} 
+                  className="w-4 h-4 rounded border-ui-border text-brand-primary focus:ring-brand-primary"
+                />
+                Mostrar matérias de outros cursos
               </label>
             </div>
             <SearchBar 

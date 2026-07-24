@@ -62,6 +62,7 @@ export const disciplinasService = {
             limiteCreditosAtingido: d.limiteCreditosAtingido,
             departamento: d.departamento,
             periodoIdeal: d.periodoIdeal,
+            doCursoDoAluno: d.doCursoDoAluno,
         }));
 
         return {

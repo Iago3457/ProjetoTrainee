@@ -18,11 +18,12 @@ export interface DisciplinaCardProps {
   onVerDetalhes?: () => void;
   departamento?: string | null;
   periodoIdeal?: number | null;
+  doCursoDoAluno?: boolean;
 }
 
 export default function DisciplinaCard({
   codigo, nome, vagasOcupadas, vagasTotais, periodo, creditos,
-  statusInscricao, preRequisito, limiteCreditosAtingido, onInscrever, isEnrolling, onVerDetalhes, departamento, periodoIdeal
+  statusInscricao, preRequisito, limiteCreditosAtingido, onInscrever, isEnrolling, onVerDetalhes, departamento, periodoIdeal, doCursoDoAluno
 }: DisciplinaCardProps) {
   
   const isBloqueado = (preRequisito && !preRequisito.atendido) || (statusInscricao === 'indisponivel');
@@ -43,7 +44,14 @@ export default function DisciplinaCard({
       
       {/* Linha 1: Código e Vagas */}
       <div className="flex justify-between items-center">
-        <Badge variant="primary">{codigo}</Badge>
+        <div className="flex items-center gap-2">
+          <Badge variant="primary">{codigo}</Badge>
+          {doCursoDoAluno === false && (
+            <span className="text-[10px] font-medium text-amber-600 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-md">
+              Outro curso
+            </span>
+          )}
+        </div>
         {isCheio ? (
           <span className="text-[11px] text-ui-muted font-medium">
             Lotação: {vagasOcupadas}/{vagasTotais}
