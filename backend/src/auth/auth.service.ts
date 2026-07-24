@@ -44,6 +44,7 @@ export class AuthService {
                 ra: raGerado,
                 periodo: '1', //atualizar depois para calcular o período com base no semestre de ingresso
                 semestre: `${anoAtual}.1`,  //atualizar depois para calcular o semestre de ingresso
+                ...(dados.cursoId && { cursoId: dados.cursoId }),
             }
         });
         
@@ -88,7 +89,7 @@ export class AuthService {
                 ra: true,
                 periodo: true,
                 semestre: true,
-                curso: true,
+                curso: { select: { id: true, nome: true, codigo: true } },
                 avatar: true,
             }
         });

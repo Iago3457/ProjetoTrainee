@@ -14,8 +14,15 @@ export class DisciplinasService {
                 matriculas: {
                     where: { status: 'inscrito', semestre: semestreAtual, ano: anoAtual }
                 },
-                horarios: true
+                horarios: true,
+                cursos: { select: { id: true, nome: true, codigo: true } },
             }
+        });
+
+        // Buscar o cursoId do aluno
+        const aluno = await this.prisma.aluno.findUnique({
+            where: { id: alunoId },
+            select: { cursoId: true },
         });
 
         const historicoAluno = await this.prisma.matricula.findMany({
@@ -88,6 +95,10 @@ export class DisciplinasService {
                 statusInscricao: statusInscricao,
                 departamento: disciplina.departamento,
                 periodoIdeal: disciplina.periodoIdeal,
+                cursos: disciplina.cursos,
+                doCursoDoAluno: aluno?.cursoId
+                    ? disciplina.cursos.some(c => c.id === aluno.cursoId)
+                    : true, // Se aluno não tem curso, mostra tudo
             };
         });
 

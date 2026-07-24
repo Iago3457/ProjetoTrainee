@@ -53,6 +53,7 @@ export const criarDisciplinaSchema = z.object({
     departamento: z.string().optional(),
     periodoIdeal: z.number().int().min(1).max(10).optional(),
     preRequisitoId: z.string().uuid().optional(),
+    cursoIds: z.array(z.string().uuid()).optional(),
 });
 
 export const atualizarDisciplinaSchema = z.object({
@@ -68,6 +69,7 @@ export const atualizarDisciplinaSchema = z.object({
     departamento: z.string().optional().nullable(),
     periodoIdeal: z.number().int().min(1).max(10).optional().nullable(),
     preRequisitoId: z.string().uuid().optional().nullable(),
+    cursoIds: z.array(z.string().uuid()).optional(),
 });
 
 export const definirStatusSchema = z.object({
@@ -120,6 +122,9 @@ export class CriarDisciplinaDto {
 
     @ApiPropertyOptional({ example: 'uuid-do-prerequisito', description: 'ID (UUID) da disciplina pré-requisito' })
     preRequisitoId?: string;
+
+    @ApiPropertyOptional({ example: ['uuid-curso-1'], description: 'IDs dos cursos aos quais a disciplina pertence' })
+    cursoIds?: string[];
 }
 
 export class AtualizarDisciplinaDto {
@@ -149,6 +154,9 @@ export class AtualizarDisciplinaDto {
 
     @ApiPropertyOptional({ example: null, description: 'ID do novo pré-requisito (null para remover)' })
     preRequisitoId?: string | null;
+
+    @ApiPropertyOptional({ example: ['uuid-curso-1'], description: 'IDs dos cursos aos quais a disciplina pertence' })
+    cursoIds?: string[];
 }
 
 class MatriculaStatusDto {

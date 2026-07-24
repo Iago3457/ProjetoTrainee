@@ -20,6 +20,7 @@ export class AdminService {
                     }
                 },
                 horarios: true,
+                cursos: { select: { id: true, nome: true, codigo: true } },
             },
             orderBy: [{ periodoIdeal: 'asc' }, { codigo: 'asc' }],
         });
@@ -38,6 +39,7 @@ export class AdminService {
             preRequisito: d.preRequisito
                 ? { id: d.preRequisito.id, codigo: d.preRequisito.codigo, nome: d.preRequisito.nome }
                 : null,
+            cursos: d.cursos,
             vagasOcupadas: d.matriculas.length,
             inscritos: d.matriculas.map(m => m.aluno),
         }));
@@ -54,6 +56,7 @@ export class AdminService {
         departamento?: string;
         periodoIdeal?: number;
         preRequisitoId?: string;
+        cursoIds?: string[];
     }) {
         const existente = await this.prisma.disciplina.findUnique({
             where: { codigo: dados.codigo },
@@ -85,7 +88,12 @@ export class AdminService {
                 preRequisitoId: dados.preRequisitoId,
                 horarios: {
                     create: dados.horarios,
-                }
+                },
+                ...(dados.cursoIds && dados.cursoIds.length > 0 && {
+                    cursos: {
+                        connect: dados.cursoIds.map(id => ({ id })),
+                    },
+                }),
             }
         });
     }
@@ -102,6 +110,7 @@ export class AdminService {
             departamento?: string;
             periodoIdeal?: number;
             preRequisitoId?: string | null;
+            cursoIds?: string[];
         },
     ) {
         const disciplina = await this.prisma.disciplina.findUnique({ where: { id } });
@@ -134,7 +143,12 @@ export class AdminService {
                         deleteMany: {},
                         create: dados.horarios,
                     }
-                })
+                }),
+                ...(dados.cursoIds !== undefined && {
+                    cursos: {
+                        set: dados.cursoIds.map(cursoId => ({ id: cursoId })),
+                    },
+                }),
             } 
         });
     }
