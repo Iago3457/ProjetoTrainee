@@ -12,6 +12,7 @@ export interface AdminDisciplina {
     departamento: string | null;
     periodoIdeal: number | null;
     preRequisito: { id: string; codigo: string; nome: string } | null;
+    cursos: { id: string; nome: string; codigo: string }[];
     vagasOcupadas: number;
     inscritos: { id: string; nome: string; email: string; ra: string }[];
 }
@@ -31,6 +32,16 @@ export interface AlunoMatriculaSemestre {
         status: string;
         aluno: { id: string; nome: string; email: string; ra: string };
     }[];
+}
+
+export interface Curso {
+    id: string;
+    nome: string;
+    codigo: string;
+    _count?: {
+        disciplinas: number;
+        alunos: number;
+    };
 }
 
 export const adminService = {
@@ -55,6 +66,7 @@ export const adminService = {
         departamento?: string;
         periodoIdeal?: number;
         preRequisitoId?: string;
+        cursoIds?: string[];
     }) => {
         const response = await api.post('/admin/disciplinas', dados);
         return response.data;
@@ -105,6 +117,26 @@ export const adminService = {
 
     avancarSemestre: async () => {
         const response = await api.post('/admin/semestre/avancar');
+        return response.data;
+    },
+
+    listarCursos: async (): Promise<Curso[]> => {
+        const response = await api.get('/admin/cursos');
+        return response.data;
+    },
+
+    criarCurso: async (dados: { nome: string; codigo: string }) => {
+        const response = await api.post('/admin/cursos', dados);
+        return response.data;
+    },
+
+    atualizarCurso: async (id: string, dados: { nome?: string; codigo?: string }) => {
+        const response = await api.put(`/admin/cursos/${id}`, dados);
+        return response.data;
+    },
+
+    excluirCurso: async (id: string) => {
+        const response = await api.delete(`/admin/cursos/${id}`);
         return response.data;
     },
 };
