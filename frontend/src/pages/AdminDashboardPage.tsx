@@ -5,6 +5,7 @@ import { GraduationCapIcon, SearchIcon, PlusIcon, EditIcon, TrashIcon, LogOutIco
 import AdminDisciplinaModal from '../components/AdminDisciplinaModal'
 import AdminAlunosModal from '../components/AdminAlunosModal'
 import AdminGestaoSemestre from '../components/AdminGestaoSemestre'
+import AdminCursosTab from '../components/AdminCursosTab'
 import { toast } from 'react-hot-toast'
 import { formatHorarios } from '../utils/horarioFormatter'
 
@@ -13,7 +14,7 @@ interface AdminDashboardPageProps {
 }
 
 export default function AdminDashboardPage({ onNavigate }: AdminDashboardPageProps) {
-  const [activeTab, setActiveTab] = useState<'catalogo' | 'aprovacoes' | 'gestao'>('catalogo')
+  const [activeTab, setActiveTab] = useState<'catalogo' | 'aprovacoes' | 'gestao' | 'cursos'>('catalogo')
   const [disciplinas, setDisciplinas] = useState<AdminDisciplina[]>([])
   const [pendentes, setPendentes] = useState<MatriculaPendente[]>([])
   const [search, setSearch] = useState('')
@@ -23,16 +24,19 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
   const [isAlunosModalOpen, setIsAlunosModalOpen] = useState(false)
   const [disciplinaSelecionada, setDisciplinaSelecionada] = useState<AdminDisciplina | null>(null)
   const [disciplinaAlunosSelecionada, setDisciplinaAlunosSelecionada] = useState<AdminDisciplina | null>(null)
+  const [cursos, setCursos] = useState<any[]>([])
 
   const carregarDados = async () => {
     try {
       setLoading(true)
-      const [dataDisciplinas, dataPendentes] = await Promise.all([
+      const [dataDisciplinas, dataPendentes, dataCursos] = await Promise.all([
         adminService.listarDisciplinas(),
-        adminService.listarPendentes()
+        adminService.listarPendentes(),
+        adminService.listarCursos()
       ])
       setDisciplinas(dataDisciplinas)
       setPendentes(dataPendentes)
+      setCursos(dataCursos)
     } catch (error: any) {
       toast.error('Erro ao carregar dados do painel.')
     } finally {
@@ -185,6 +189,16 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
             >
               Gestão de Semestre
             </button>
+            <button 
+              onClick={() => setActiveTab('cursos')}
+              className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'cursos' 
+                  ? 'border-brand-primary text-white' 
+                  : 'border-transparent text-[#9794A8] hover:text-[#B0ADC0]'
+              }`}
+            >
+              Cursos
+            </button>
           </div>
         </div>
       </header>
@@ -193,7 +207,7 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          {activeTab !== 'gestao' && (
+          {(activeTab !== 'gestao' && activeTab !== 'cursos') && (
             <h2 className="text-xl font-bold text-white">
               {activeTab === 'catalogo' ? 'Disciplinas do Catálogo' : 'Aprovações Pendentes'}
             </h2>
@@ -210,7 +224,7 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
         </div>
 
         {/* Toolbar */}
-        {activeTab !== 'gestao' && (
+        {(activeTab !== 'gestao' && activeTab !== 'cursos') && (
         <div className="bg-[#1A1929] border border-[#2A2940] rounded-t-xl p-4 flex flex-col sm:flex-row gap-4 items-center justify-between">
           <div className="relative w-full sm:max-w-md">
             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-[#555367] w-4 h-4" />
@@ -234,6 +248,8 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
         {/* Content Area */}
         {activeTab === 'gestao' ? (
           <AdminGestaoSemestre />
+        ) : activeTab === 'cursos' ? (
+          <AdminCursosTab />
         ) : (
         <div className="bg-[#1A1929] border-x border-b border-[#2A2940] rounded-b-xl overflow-x-auto">
           {loading ? (
@@ -394,6 +410,7 @@ export default function AdminDashboardPage({ onNavigate }: AdminDashboardPagePro
         onSave={handleSalvarDisciplina}
         disciplinaInicial={disciplinaSelecionada}
         todasDisciplinas={disciplinas}
+        todosCursos={cursos}
       />
 
       <AdminAlunosModal 

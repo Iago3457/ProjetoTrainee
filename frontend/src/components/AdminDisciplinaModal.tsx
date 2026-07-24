@@ -8,6 +8,7 @@ interface AdminDisciplinaModalProps {
   onSave: (dados: any) => Promise<void>;
   disciplinaInicial?: AdminDisciplina | null;
   todasDisciplinas: AdminDisciplina[];
+  todosCursos: { id: string; nome: string; codigo: string }[];
 }
 
 export default function AdminDisciplinaModal({
@@ -15,7 +16,8 @@ export default function AdminDisciplinaModal({
   onClose,
   onSave,
   disciplinaInicial,
-  todasDisciplinas
+  todasDisciplinas,
+  todosCursos
 }: AdminDisciplinaModalProps) {
   const [formData, setFormData] = useState({
     codigo: '',
@@ -27,7 +29,8 @@ export default function AdminDisciplinaModal({
     horarios: [] as { diaSemana: string; horarioInicio: string; horarioFim: string }[],
     departamento: '',
     periodoIdeal: 1,
-    preRequisitoId: ''
+    preRequisitoId: '',
+    cursoIds: [] as string[]
   });
   
   const [carregando, setCarregando] = useState(false);
@@ -45,7 +48,8 @@ export default function AdminDisciplinaModal({
         horarios: disciplinaInicial.horarios || [],
         departamento: disciplinaInicial.departamento || '',
         periodoIdeal: disciplinaInicial.periodoIdeal || 1,
-        preRequisitoId: disciplinaInicial.preRequisito?.id || ''
+        preRequisitoId: disciplinaInicial.preRequisito?.id || '',
+        cursoIds: disciplinaInicial.cursos?.map((c) => c.id) || []
       });
     } else {
       setFormData({
@@ -58,7 +62,8 @@ export default function AdminDisciplinaModal({
         horarios: [],
         departamento: '',
         periodoIdeal: 1,
-        preRequisitoId: ''
+        preRequisitoId: '',
+        cursoIds: []
       });
     }
     setErro('');
@@ -72,6 +77,9 @@ export default function AdminDisciplinaModal({
     
     if (type === 'number') {
       finalValue = value === '' ? '' : Number(value);
+    } else if (type === 'select-multiple') {
+      const selectElement = e.target as HTMLSelectElement;
+      finalValue = Array.from(selectElement.selectedOptions, option => option.value);
     }
     
     setFormData(prev => ({ ...prev, [name]: finalValue }));
@@ -296,6 +304,27 @@ export default function AdminDisciplinaModal({
                       </option>
                   ))}
                 </select>
+              </div>
+
+              {/* Cursos */}
+              <div className="flex flex-col gap-1">
+                <label className="text-[13px] font-medium text-[#B0ADC0]">Cursos *</label>
+                <select
+                  name="cursoIds"
+                  multiple
+                  value={formData.cursoIds}
+                  onChange={handleChange}
+                  required
+                  className="w-full border border-[#2A2940] rounded-lg px-3 py-2 bg-[#12111E] text-white text-sm focus:border-brand-primary/50 outline-none"
+                  style={{ minHeight: '80px' }}
+                >
+                  {todosCursos.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.codigo}
+                    </option>
+                  ))}
+                </select>
+                <span className="text-[11px] text-[#9794A8]">Segure Ctrl/Cmd para selecionar vários</span>
               </div>
             </div>
 

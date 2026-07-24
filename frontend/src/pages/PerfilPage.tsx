@@ -29,7 +29,7 @@ export default function PerfilPage({ onNavigate }: PerfilPageProps) {
         name: perfil.nome,
         email: perfil.email,
         matricula: perfil.ra,
-        curso: perfil.curso || 'Bacharelado em Ciência da Computação',
+        curso: perfil.curso?.nome || 'Bacharelado em Ciência da Computação',
         periodo: perfil.periodo,
         semestre: perfil.semestre,
         password: '',

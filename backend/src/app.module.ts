@@ -7,10 +7,12 @@ import { AuthModule } from './auth/auth.module';
 import { DisciplinasModule } from './disciplinas/disciplinas.module';
 import { MatriculasModule } from './matriculas/matriculas.module';
 import { AdminModule } from './admin/admin.module';
+import { CursosModule } from './cursos/cursos.module';
 
 @Module({
-  imports: [PrismaModule, AlunoModule, AuthModule, DisciplinasModule, MatriculasModule, AdminModule],
+  imports: [PrismaModule, AlunoModule, AuthModule, DisciplinasModule, MatriculasModule, AdminModule, CursosModule],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
+

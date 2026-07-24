@@ -16,12 +16,32 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
     console.log('🧹 Limpando o banco de dados...');
     await prisma.matricula.deleteMany();
+    await prisma.horario.deleteMany();
     await prisma.disciplina.deleteMany();
     await prisma.aluno.deleteMany();
     await prisma.admin.deleteMany();
+    await prisma.curso.deleteMany();
     await prisma.config.deleteMany();
 
     const senhaPadraoHash = await bcrypt.hash('123456', 10);
+
+    // ============================================================
+    // CURSO — Bacharelado em Ciência da Computação
+    // ============================================================
+    console.log('🎓 Criando curso...');
+    const cursoBCC = await prisma.curso.create({
+        data: {
+            nome: 'Bacharelado em Ciência da Computação',
+            codigo: 'BCC',
+        },
+    });
+
+    const cursoENC = await prisma.curso.create({
+        data: {
+            nome: 'Engenharia de Computação',
+            codigo: 'ENC',
+        },
+    });
 
     // ============================================================
     // 1º SEMESTRE — Disciplinas (sem pré-requisitos)
@@ -43,6 +63,7 @@ async function main() {
                         { diaSemana: 'Sexta', horarioInicio: '08:00', horarioFim: '10:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DM',
             periodoIdeal: 1,
         },
@@ -62,6 +83,7 @@ async function main() {
                         { diaSemana: 'Quinta', horarioInicio: '08:00', horarioFim: '10:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 1,
         },
@@ -80,6 +102,7 @@ async function main() {
                         { diaSemana: 'Sexta', horarioInicio: '10:00', horarioFim: '12:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 1,
         },
@@ -99,6 +122,7 @@ async function main() {
                         { diaSemana: 'Quarta', horarioInicio: '14:00', horarioFim: '18:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 1,
         },
@@ -118,6 +142,7 @@ async function main() {
                         { diaSemana: 'Quinta', horarioInicio: '14:00', horarioFim: '17:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 1,
         },
@@ -142,6 +167,7 @@ async function main() {
                         { diaSemana: 'Quarta', horarioInicio: '08:00', horarioFim: '10:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DM',
             periodoIdeal: 2,
         },
@@ -161,6 +187,7 @@ async function main() {
                         { diaSemana: 'Quinta', horarioInicio: '08:00', horarioFim: '10:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DEs',
             periodoIdeal: 2,
         },
@@ -179,6 +206,7 @@ async function main() {
                         { diaSemana: 'Sexta', horarioInicio: '08:00', horarioFim: '12:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 2,
         },
@@ -199,6 +227,7 @@ async function main() {
                 ]
             },
             preRequisitoId: cap.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 2,
         },
@@ -219,6 +248,7 @@ async function main() {
                 ]
             },
             preRequisitoId: cap.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 2,
         },
@@ -239,6 +269,7 @@ async function main() {
                 ]
             },
             preRequisitoId: logDigital.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 2,
         },
@@ -264,6 +295,7 @@ async function main() {
                 ]
             },
             preRequisitoId: calc1.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DM',
             periodoIdeal: 3,
         },
@@ -284,6 +316,7 @@ async function main() {
                 ]
             },
             preRequisitoId: aed1.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 3,
         },
@@ -304,6 +337,7 @@ async function main() {
                 ]
             },
             preRequisitoId: aed1.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 3,
         },
@@ -324,6 +358,7 @@ async function main() {
                 ]
             },
             preRequisitoId: arqOrg1.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 3,
         },
@@ -342,6 +377,7 @@ async function main() {
                         { diaSemana: 'Sexta', horarioInicio: '08:00', horarioFim: '12:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 3,
         },
@@ -360,6 +396,7 @@ async function main() {
                         { diaSemana: 'Sexta', horarioInicio: '14:00', horarioFim: '18:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 3,
         },
@@ -385,6 +422,7 @@ async function main() {
                 ]
             },
             preRequisitoId: geomAnalitica.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DM',
             periodoIdeal: 4,
         },
@@ -405,6 +443,7 @@ async function main() {
                 ]
             },
             preRequisitoId: aed2.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 4,
         },
@@ -425,6 +464,7 @@ async function main() {
                 ]
             },
             preRequisitoId: cap.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 4,
         },
@@ -445,6 +485,7 @@ async function main() {
                 ]
             },
             preRequisitoId: poo.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 4,
         },
@@ -465,6 +506,7 @@ async function main() {
                 ]
             },
             preRequisitoId: aed1.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 4,
         },
@@ -485,8 +527,94 @@ async function main() {
                 ]
             },
             preRequisitoId: aed1.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 4,
+        },
+    });
+
+    // ============================================================
+    // DISCIPLINAS — Engenharia de Computação
+    // ============================================================
+    console.log('📚 Criando disciplinas do curso de Engenharia de Computação...');
+
+    const circLog = await prisma.disciplina.create({
+        data: {
+            codigo: 'ENC001',
+            nome: 'Circuitos Lógicos',
+            descricao: 'Estudo de portas lógicas, circuitos combinacionais e sequenciais, máquinas de estado.',
+            professor: 'Prof. Dr. Roberto Silva',
+            creditos: 4,
+            vagas: 40,
+            horarios: {
+                create: [
+                        { diaSemana: 'Segunda', horarioInicio: '08:00', horarioFim: '10:00' },
+                        { diaSemana: 'Quarta', horarioInicio: '08:00', horarioFim: '10:00' }
+                ]
+            },
+            cursos: { connect: [{ id: cursoENC.id }] },
+            departamento: 'DEE',
+            periodoIdeal: 1,
+        },
+    });
+
+    const sinalSistemas = await prisma.disciplina.create({
+        data: {
+            codigo: 'ENC002',
+            nome: 'Sinais e Sistemas',
+            descricao: 'Análise de sinais no domínio do tempo e frequência, transformadas de Fourier e Laplace.',
+            professor: 'Profa. Dra. Ana Mendes',
+            creditos: 4,
+            vagas: 40,
+            horarios: {
+                create: [
+                        { diaSemana: 'Terça', horarioInicio: '10:00', horarioFim: '12:00' },
+                        { diaSemana: 'Quinta', horarioInicio: '10:00', horarioFim: '12:00' }
+                ]
+            },
+            cursos: { connect: [{ id: cursoENC.id }] },
+            departamento: 'DEE',
+            periodoIdeal: 2,
+        },
+    });
+
+    const fisica1 = await prisma.disciplina.create({
+        data: {
+            codigo: 'FIS001',
+            nome: 'Física I',
+            descricao: 'Mecânica clássica, cinemática, leis de Newton, trabalho e energia.',
+            professor: 'Prof. Dr. Carlos Souza',
+            creditos: 4,
+            vagas: 40,
+            horarios: {
+                create: [
+                        { diaSemana: 'Segunda', horarioInicio: '14:00', horarioFim: '16:00' },
+                        { diaSemana: 'Quarta', horarioInicio: '14:00', horarioFim: '16:00' }
+                ]
+            },
+            cursos: { connect: [{ id: cursoENC.id }] },
+            departamento: 'DF',
+            periodoIdeal: 1,
+        },
+    });
+
+    const redesAvancadas = await prisma.disciplina.create({
+        data: {
+            codigo: 'ENC003',
+            nome: 'Redes de Computadores Avançadas',
+            descricao: 'Protocolos de roteamento, redes sem fio, segurança em redes.',
+            professor: 'Prof. Dr. João Pedro',
+            creditos: 4,
+            vagas: 40,
+            horarios: {
+                create: [
+                        { diaSemana: 'Terça', horarioInicio: '14:00', horarioFim: '16:00' },
+                        { diaSemana: 'Quinta', horarioInicio: '14:00', horarioFim: '16:00' }
+                ]
+            },
+            cursos: { connect: [{ id: cursoENC.id }] },
+            departamento: 'DC',
+            periodoIdeal: 3,
         },
     });
 
@@ -515,7 +643,7 @@ async function main() {
                 ra: `2026${String(sem).padStart(6, '0')}`,
                 periodo: `${sem}º`,
                 semestre: '2026.1',
-                curso: 'Bacharelado em Ciência da Computação',
+                cursoId: cursoBCC.id,
             },
         });
         alunos.push(aluno);

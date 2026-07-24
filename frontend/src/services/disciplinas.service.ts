@@ -15,7 +15,7 @@ export interface UserProfile {
     ra: string;
     periodo: string;
     semestre: string;
-    curso: string | null;
+    curso: { id: string; nome: string; codigo: string } | null;
     avatar: string | null;
 }
 
@@ -62,6 +62,7 @@ export const disciplinasService = {
             limiteCreditosAtingido: d.limiteCreditosAtingido,
             departamento: d.departamento,
             periodoIdeal: d.periodoIdeal,
+            doCursoDoAluno: d.doCursoDoAluno,
         }));
 
         return {
