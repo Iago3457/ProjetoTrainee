@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import universidades from '../resources/universities.json'; //importa um JSON com as universidades e seus domínios
+import universidades from '../resources/universities.json';
 
-const dominiosPermitidos = universidades.flatMap((uni: any) => uni.domains); //coloca todos os dominios de universidades em um array
+const dominiosPermitidos = universidades.flatMap((uni: any) => uni.domains);
 
 export const cadastroSchema = z.object({
   nome: z.string().min(3, { error: 'O Nome deve ter no mínimo 3 caracteres' }),

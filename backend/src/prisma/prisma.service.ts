@@ -22,7 +22,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
     await this.$connect();
 
-    // Setup initial config if missing
+
     const hasAno = await this.config.findUnique({ where: { chave: 'anoAtual' } });
     if (!hasAno) {
       await this.config.create({ data: { chave: 'anoAtual', valor: '2026' } });

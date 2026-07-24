@@ -5,8 +5,6 @@ import { PrismaService } from '../prisma/prisma.service';
 export class AdminService {
     constructor(private readonly prisma: PrismaService) {}
 
-    // ==================== DISCIPLINAS ====================
-
     async listarDisciplinas() {
         const { semestre: semestreAtual, ano: anoAtual } = await this.prisma.getSemestreAtual();
 
@@ -178,8 +176,6 @@ export class AdminService {
         return this.prisma.disciplina.delete({ where: { id } });
     }
 
-    // ==================== MATRÍCULAS (Aprovação) ====================
-
     async listarMatriculasPendentes() {
         return this.prisma.matricula.findMany({
             where: { status: 'requisitada' },
@@ -217,8 +213,6 @@ export class AdminService {
         });
     }
 
-    // ==================== GESTÃO DE SEMESTRE ====================
-
     async obterSemestreAtual() {
         return this.prisma.getSemestreAtual();
     }
@@ -236,8 +230,6 @@ export class AdminService {
             },
             orderBy: { aluno: { nome: 'asc' } },
         });
-
-        // Agrupar por disciplina para facilitar o frontend
         const porDisciplina = new Map<string, any>();
 
         for (const m of matriculas) {
@@ -258,8 +250,7 @@ export class AdminService {
     }
 
     async definirStatusMatriculas(matriculas: { matriculaId: string; status: string }[]) {
-        // Como o SQLite/Prisma não suporta updateMany com múltiplos valores diferentes fácil, 
-        // fazemos um update em loop ou $transaction
+        // Transação em lote devido à limitação do Prisma com updateMany
         const operations = matriculas.map((m) =>
             this.prisma.matricula.update({
                 where: { id: m.matriculaId },
@@ -275,7 +266,7 @@ export class AdminService {
     async avancarSemestre() {
         const { ano, semestre } = await this.prisma.getSemestreAtual();
 
-        // 1. Marcar matrículas "inscrito" ou "requisitada" como "reprovado"
+        // Reprovar alunos com matrículas pendentes ou inscritas
         await this.prisma.matricula.updateMany({
             where: {
                 ano,
@@ -287,7 +278,7 @@ export class AdminService {
             }
         });
 
-        // 2. Calcular o próximo semestre
+        // Calcular próximo semestre
         let proxAno = ano;
         let proxSemestre = semestre;
 
@@ -298,7 +289,7 @@ export class AdminService {
             proxAno += 1;
         }
 
-        // Obter todos os alunos para avançar o período (que é String no banco)
+        // Avançar período dos alunos
         const alunos = await this.prisma.aluno.findMany();
         const updateAlunos = alunos.map(aluno => {
             const currentPeriodo = parseInt(aluno.periodo, 10);
@@ -309,7 +300,7 @@ export class AdminService {
             });
         });
 
-        // 3. Atualizar configurações no banco
+        // Atualizar semestre atual
         await this.prisma.$transaction([
             this.prisma.config.update({
                 where: { chave: 'anoAtual' },

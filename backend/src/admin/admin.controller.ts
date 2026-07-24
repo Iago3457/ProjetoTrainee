@@ -39,8 +39,6 @@ export class AdminController {
         }
     }
 
-    // ==================== DISCIPLINAS ====================
-
     @UseGuards(AuthGuard)
     @Get('disciplinas')
     @ApiOperation({ summary: 'Listar todas as disciplinas com lotação' })
@@ -96,8 +94,6 @@ export class AdminController {
         return this.adminService.excluirDisciplina(id);
     }
 
-    // ==================== MATRÍCULAS (Aprovação) ====================
-
     @UseGuards(AuthGuard)
     @Get('matriculas/pendentes')
     @ApiOperation({ summary: 'Listar matrículas pendentes de aprovação' })
@@ -133,8 +129,6 @@ export class AdminController {
         this.assertAdmin(req);
         return this.adminService.rejeitarMatricula(id);
     }
-
-    // ==================== GESTÃO DE SEMESTRE ====================
 
     @UseGuards(AuthGuard)
     @Get('semestre/atual')

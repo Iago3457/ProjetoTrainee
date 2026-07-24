@@ -120,12 +120,12 @@ export default function DashboardPage({ onNavigate }: DashboardPageProps) {
     if (!showIndisponiveis && d.statusInscricao === 'indisponivel') return false;
     if (!showOutrosCursos && d.doCursoDoAluno === false) return false;
 
-    // Filter by period
+
     if (filtroPeriodo && filtroPeriodo !== 'todos') {
       if (d.periodoIdeal !== parseInt(filtroPeriodo)) return false;
     }
 
-    // Filter by department
+
     if (filtroDepartamento && filtroDepartamento !== 'todos') {
       if (d.departamento !== filtroDepartamento) return false;
     }
