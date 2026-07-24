@@ -11,16 +11,30 @@ datasource db {
   provider = "postgresql"
 }
 
+model Curso {
+  id     String @id @default(uuid())
+  nome   String
+  codigo String @unique
+
+  disciplinas Disciplina[]
+  alunos      Aluno[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Aluno {
   id String @id @default(uuid())
   nome String
   email String @unique
   ra String @unique
   periodo String
-  curso String? // Criar Tabela de Curso depois?
   avatar String?
   semestre String
   senha String
+
+  cursoId String?
+  curso   Curso? @relation(fields: [cursoId], references: [id])
 
   matriculas Matricula[]
 
@@ -46,6 +60,8 @@ model Disciplina {
   horarios Horario[]
 
   matriculas Matricula[]
+
+  cursos Curso[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

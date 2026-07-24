@@ -16,12 +16,25 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
     console.log('🧹 Limpando o banco de dados...');
     await prisma.matricula.deleteMany();
+    await prisma.horario.deleteMany();
     await prisma.disciplina.deleteMany();
     await prisma.aluno.deleteMany();
     await prisma.admin.deleteMany();
+    await prisma.curso.deleteMany();
     await prisma.config.deleteMany();
 
     const senhaPadraoHash = await bcrypt.hash('123456', 10);
+
+    // ============================================================
+    // CURSO — Bacharelado em Ciência da Computação
+    // ============================================================
+    console.log('🎓 Criando curso...');
+    const cursoBCC = await prisma.curso.create({
+        data: {
+            nome: 'Bacharelado em Ciência da Computação',
+            codigo: 'BCC',
+        },
+    });
 
     // ============================================================
     // 1º SEMESTRE — Disciplinas (sem pré-requisitos)
@@ -43,6 +56,7 @@ async function main() {
                         { diaSemana: 'Sexta', horarioInicio: '08:00', horarioFim: '10:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DM',
             periodoIdeal: 1,
         },
@@ -62,6 +76,7 @@ async function main() {
                         { diaSemana: 'Quinta', horarioInicio: '08:00', horarioFim: '10:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 1,
         },
@@ -80,6 +95,7 @@ async function main() {
                         { diaSemana: 'Sexta', horarioInicio: '10:00', horarioFim: '12:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 1,
         },
@@ -99,6 +115,7 @@ async function main() {
                         { diaSemana: 'Quarta', horarioInicio: '14:00', horarioFim: '18:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 1,
         },
@@ -118,6 +135,7 @@ async function main() {
                         { diaSemana: 'Quinta', horarioInicio: '14:00', horarioFim: '17:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 1,
         },
@@ -142,6 +160,7 @@ async function main() {
                         { diaSemana: 'Quarta', horarioInicio: '08:00', horarioFim: '10:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DM',
             periodoIdeal: 2,
         },
@@ -161,6 +180,7 @@ async function main() {
                         { diaSemana: 'Quinta', horarioInicio: '08:00', horarioFim: '10:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DEs',
             periodoIdeal: 2,
         },
@@ -179,6 +199,7 @@ async function main() {
                         { diaSemana: 'Sexta', horarioInicio: '08:00', horarioFim: '12:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 2,
         },
@@ -199,6 +220,7 @@ async function main() {
                 ]
             },
             preRequisitoId: cap.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 2,
         },
@@ -219,6 +241,7 @@ async function main() {
                 ]
             },
             preRequisitoId: cap.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 2,
         },
@@ -239,6 +262,7 @@ async function main() {
                 ]
             },
             preRequisitoId: logDigital.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 2,
         },
@@ -264,6 +288,7 @@ async function main() {
                 ]
             },
             preRequisitoId: calc1.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DM',
             periodoIdeal: 3,
         },
@@ -284,6 +309,7 @@ async function main() {
                 ]
             },
             preRequisitoId: aed1.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 3,
         },
@@ -304,6 +330,7 @@ async function main() {
                 ]
             },
             preRequisitoId: aed1.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 3,
         },
@@ -324,6 +351,7 @@ async function main() {
                 ]
             },
             preRequisitoId: arqOrg1.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 3,
         },
@@ -342,6 +370,7 @@ async function main() {
                         { diaSemana: 'Sexta', horarioInicio: '08:00', horarioFim: '12:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 3,
         },
@@ -360,6 +389,7 @@ async function main() {
                         { diaSemana: 'Sexta', horarioInicio: '14:00', horarioFim: '18:00' }
                 ]
             },
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 3,
         },
@@ -385,6 +415,7 @@ async function main() {
                 ]
             },
             preRequisitoId: geomAnalitica.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DM',
             periodoIdeal: 4,
         },
@@ -405,6 +436,7 @@ async function main() {
                 ]
             },
             preRequisitoId: aed2.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 4,
         },
@@ -425,6 +457,7 @@ async function main() {
                 ]
             },
             preRequisitoId: cap.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 4,
         },
@@ -445,6 +478,7 @@ async function main() {
                 ]
             },
             preRequisitoId: poo.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 4,
         },
@@ -465,6 +499,7 @@ async function main() {
                 ]
             },
             preRequisitoId: aed1.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 4,
         },
@@ -485,6 +520,7 @@ async function main() {
                 ]
             },
             preRequisitoId: aed1.id,
+            cursos: { connect: [{ id: cursoBCC.id }] },
             departamento: 'DC',
             periodoIdeal: 4,
         },
@@ -515,7 +551,7 @@ async function main() {
                 ra: `2026${String(sem).padStart(6, '0')}`,
                 periodo: `${sem}º`,
                 semestre: '2026.1',
-                curso: 'Bacharelado em Ciência da Computação',
+                cursoId: cursoBCC.id,
             },
         });
         alunos.push(aluno);
